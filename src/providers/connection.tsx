@@ -1,8 +1,17 @@
 'use client'
 import { useRouter } from "next/navigation"
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from "react"
+import OBSWebSocket from 'obs-websocket-js'
 
-const ConnectionContext = createContext<{ isConnected: boolean, connect: () => void, disconnect: () => void } | undefined>(undefined)
+const obs = new OBSWebSocket()
+
+const host = 'ws://localhost:4455'
+
+const ConnectionContext = createContext<{
+    isConnected: boolean,
+    connect: () => Promise<void>,
+    disconnect: () => Promise<void>
+} | undefined>(undefined)
 
 export const useConnection = () => {
     const context = useContext(ConnectionContext)
@@ -22,13 +31,17 @@ export const ConnectionProvider = ({ children }: PropsWithChildren) => {
         router.push(`/dashboard/${isConnected ? 'info' : ''}`)
     }, [isConnected, router])
 
-    const connect = () => {
-        console.log("CONNECTION...")
-        setConnected(true)
+    const connect = async () => {
+        await obs.connect(host).then(conn => {
+            setConnected(true)
+        }).catch(err => {
+             // @TODO: Fix Toast error messages
+             console.error("ERR=>",err)
+        })
     }
 
-    const disconnect = () => {
-        console.log("DISCONNECTING...")
+    const disconnect = async () => {
+        await obs.disconnect()
         setConnected(false)
     }
 

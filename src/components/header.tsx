@@ -9,7 +9,7 @@ const ConnectButton = () => {
     const { isConnected, connect, disconnect } = useConnection()
 
     return (
-        <Button intent={isConnected ? 'destructive' : 'primary'} onClick={isConnected ? disconnect : connect}>
+        <Button intent={isConnected ? 'destructive' : 'primary'} onClick={!isConnected ? connect : disconnect}>
             {isConnected ? <UnplugIcon /> : <PlugIcon />}
             {isConnected ? 'Disconnect' : 'Connect'}
         </Button>

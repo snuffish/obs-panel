@@ -1,5 +1,5 @@
 import React from "react";
 
-export default function InfoPage() {
+export default async function InfoPage() {
   return <></>
 }
