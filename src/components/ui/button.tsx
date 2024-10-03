@@ -24,6 +24,17 @@ const buttonVariants = cva(
           'border-green-6',
           'hover:border-green-8'
         ],
+        outlineClean: [
+          'border',
+          'border-neutral-200',
+          'bg-white shadow-sm',
+          'hover:bg-neutral-100',
+          'hover:text-neutral-900',
+          'dark:border-neutral-800',
+          'dark:bg-neutral-950',
+          'dark:hover:bg-neutral-800',
+          'dark:hover:text-neutral-50'
+        ],
         destructive: [
           'bg-red',
           'text-white'
@@ -31,6 +42,9 @@ const buttonVariants = cva(
         ghost: [
           'bg-opacity-0',
           'hover:bg-green-4'
+        ],
+        dark: [
+          'bg-neutral-900 text-neutral-50 shadow hover:bg-neutral-900/90 dark:bg-neutral-50 dark:text-neutral-900 dark:hover:bg-neutral-50/90'
         ]
       },
       size: {
@@ -38,7 +52,7 @@ const buttonVariants = cva(
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
         icon: "h-9 w-9",
-      },
+      }
     },
     defaultVariants: {
       intent: "primary",

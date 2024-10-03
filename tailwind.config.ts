@@ -1,5 +1,7 @@
 import { type Config } from "tailwindcss";
 import { fontFamily } from "tailwindcss/defaultTheme";
+import colors from "tailwindcss/colors";
+
 
 export default {
 	darkMode: ["class"],
@@ -39,10 +41,15 @@ export default {
 					7: '#F3B0A2',
 					11: '#CA3214'
 				},
-				red: '#DB4324',
+				red: {
+					DEFAULT: '#DB4324',
+					...colors.red
+				},
 				white: '#fbfefc'
 			}
 		}
 	},
-	plugins: [require("tailwindcss-animate")],
+	plugins: [
+		require("tailwindcss-animate")
+	],
 } satisfies Config;
