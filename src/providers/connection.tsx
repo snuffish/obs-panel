@@ -10,7 +10,8 @@ const host = 'ws://localhost:4455'
 const ConnectionContext = createContext<{
     isConnected: boolean,
     connect: () => Promise<void>,
-    disconnect: () => Promise<void>
+    disconnect: () => Promise<void>,
+    obs: OBSWebSocket
 } | undefined>(undefined)
 
 export const useConnection = () => {
@@ -46,9 +47,7 @@ export const ConnectionProvider = ({ children }: PropsWithChildren) => {
     }
 
     return <ConnectionContext.Provider value={{
-        isConnected,
-        connect,
-        disconnect
+        isConnected, connect, disconnect, obs
     }}>
         {children}
     </ConnectionContext.Provider>
