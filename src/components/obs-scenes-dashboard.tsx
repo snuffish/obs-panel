@@ -1,30 +1,52 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
-import { Card, CardContent } from "~/components/ui/card"
-import { Button } from "~/components/ui/button"
-import { Input } from "~/components/ui/input"
-import { Edit2, Check, X } from "lucide-react"
+import { useState } from 'react'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import { Card, CardContent } from '~/components/ui/card'
+import { Button } from '~/components/ui/button'
+import { Input } from '~/components/ui/input'
+import { Edit2, Check, X } from 'lucide-react'
 
 // Simulated OBS scene data
 const initialScenes = [
-  { id: "1", name: "Main Camera", thumbnail: "/placeholder.svg?height=100&width=150", isActive: true },
-  { id: "2", name: "Game Capture", thumbnail: "/placeholder.svg?height=100&width=150", isActive: false },
-  { id: "3", name: "Overlay", thumbnail: "/placeholder.svg?height=100&width=150", isActive: false },
-  { id: "4", name: "BRB Screen", thumbnail: "/placeholder.svg?height=100&width=150", isActive: false },
+  {
+    id: '1',
+    name: 'Main Camera',
+    thumbnail: '/placeholder.svg?height=100&width=150',
+    isActive: true,
+  },
+  {
+    id: '2',
+    name: 'Game Capture',
+    thumbnail: '/placeholder.svg?height=100&width=150',
+    isActive: false,
+  },
+  {
+    id: '3',
+    name: 'Overlay',
+    thumbnail: '/placeholder.svg?height=100&width=150',
+    isActive: false,
+  },
+  {
+    id: '4',
+    name: 'BRB Screen',
+    thumbnail: '/placeholder.svg?height=100&width=150',
+    isActive: false,
+  },
 ]
 
 export function ObsScenesDashboard() {
   const [scenes, setScenes] = useState(initialScenes)
   const [editingId, setEditingId] = useState(null)
-  const [editingName, setEditingName] = useState("")
+  const [editingName, setEditingName] = useState('')
 
   const handleSceneActivation = (id) => {
-    setScenes(scenes.map(scene => ({
-      ...scene,
-      isActive: scene.id === id
-    })))
+    setScenes(
+      scenes.map((scene) => ({
+        ...scene,
+        isActive: scene.id === id,
+      })),
+    )
   }
 
   const handleEditStart = (id, name) => {
@@ -33,15 +55,17 @@ export function ObsScenesDashboard() {
   }
 
   const handleEditSave = () => {
-    setScenes(scenes.map(scene => 
-      scene.id === editingId ? { ...scene, name: editingName } : scene
-    ))
+    setScenes(
+      scenes.map((scene) =>
+        scene.id === editingId ? { ...scene, name: editingName } : scene,
+      ),
+    )
     setEditingId(null)
   }
 
   const handleEditCancel = () => {
     setEditingId(null)
-    setEditingName("")
+    setEditingName('')
   }
 
   const onDragEnd = (result) => {
@@ -55,12 +79,16 @@ export function ObsScenesDashboard() {
   }
 
   return (
-    <div className="p-4 space-y-4">
-      <h1 className="text-2xl font-bold text-white">OBS Scenes Dashboard</h1>
+    <div className='space-y-4 p-4'>
+      <h1 className='text-2xl font-bold text-white'>OBS Scenes Dashboard</h1>
       <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="scenes">
+        <Droppable droppableId='scenes'>
           {(provided) => (
-            <div {...provided.droppableProps} ref={provided.innerRef} className="space-y-4">
+            <div
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+              className='space-y-4'
+            >
               {scenes.map((scene, index) => (
                 <Draggable key={scene.id} draggableId={scene.id} index={index}>
                   {(provided) => (
@@ -70,41 +98,55 @@ export function ObsScenesDashboard() {
                       {...provided.dragHandleProps}
                       className={`${scene.isActive ? "'border-primary'" : "''"}`}
                     >
-                      <CardContent className="p-4 flex items-center space-x-4">
+                      <CardContent className='flex items-center space-x-4 p-4'>
                         <img
                           src={scene.thumbnail}
                           alt={`Thumbnail for ${scene.name}`}
-                          className="w-24 h-16 object-cover rounded"
+                          className='h-16 w-24 rounded object-cover'
                         />
-                        <div className="flex-grow">
+                        <div className='flex-grow'>
                           {editingId === scene.id ? (
-                            <div className="flex items-center space-x-2">
+                            <div className='flex items-center space-x-2'>
                               <Input
                                 value={editingName}
                                 onChange={(e) => setEditingName(e.target.value)}
-                                className="flex-grow"
+                                className='flex-grow'
                               />
-                              <Button intent='dark' size="icon" onClick={handleEditSave}>
-                                <Check className="h-4 w-4" />
+                              <Button
+                                intent='dark'
+                                size='icon'
+                                onClick={handleEditSave}
+                              >
+                                <Check className='h-4 w-4' />
                               </Button>
-                              <Button size="icon" intent="outline" onClick={handleEditCancel}>
-                                <X className="h-4 w-4" />
+                              <Button
+                                size='icon'
+                                intent='outline'
+                                onClick={handleEditCancel}
+                              >
+                                <X className='h-4 w-4' />
                               </Button>
                             </div>
                           ) : (
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium">{scene.name}</span>
-                              <Button size="icon" intent="ghost" onClick={() => handleEditStart(scene.id, scene.name)}>
-                                <Edit2 className="h-4 w-4" />
+                            <div className='flex items-center justify-between'>
+                              <span className='font-medium'>{scene.name}</span>
+                              <Button
+                                size='icon'
+                                intent='ghost'
+                                onClick={() =>
+                                  handleEditStart(scene.id, scene.name)
+                                }
+                              >
+                                <Edit2 className='h-4 w-4' />
                               </Button>
                             </div>
                           )}
                         </div>
                         <Button
-                          intent={scene.isActive ? "dark" : "outline"}
+                          intent={scene.isActive ? 'dark' : 'outline'}
                           onClick={() => handleSceneActivation(scene.id)}
                         >
-                          {scene.isActive ? "Active" : "Activate"}
+                          {scene.isActive ? 'Active' : 'Activate'}
                         </Button>
                       </CardContent>
                     </Card>
