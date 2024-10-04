@@ -1,18 +1,26 @@
 'use client'
 import { useRouter } from "next/navigation"
+import OBSWebSocket from 'obs-websocket-js'
 import { createContext, type PropsWithChildren, useContext, useEffect, useState } from "react"
-import OBSWebSocket, { EventSubscription, EventTypes } from 'obs-websocket-js'
 
 const obs = new OBSWebSocket()
 
 const host = 'ws://localhost:4455'
 
-const ConnectionContext = createContext<{
+type State = Awaited<ReturnType<ConnectionContextType['connect']>>
+
+type ConnectionContextType = {
     isConnected: boolean,
-    connect: () => Promise<void>,
+    state?: State,
+    connect: (host: string) => Promise<{
+        obsWebSocketVersion?: string
+        rpcVersion?: number
+    }>,
     disconnect: () => Promise<void>,
-    obs: OBSWebSocket
-} | undefined>(undefined)
+    _obs: OBSWebSocket
+}
+
+const ConnectionContext = createContext<ConnectionContextType | undefined>(undefined)
 
 export const useConnection = () => {
     const context = useContext(ConnectionContext)
@@ -26,16 +34,17 @@ export const useConnection = () => {
 
 const useOsbState = () => {
     const [isConnected, setConnected] = useState(false)
-    const [meta, setMeta] = useState<{
-        obsWebSocketVersion?: string
-        rpcVersion?: number
-    } | undefined>()
+    const [state, setState] = useState<State | undefined>()
 
     obs.once('ConnectionOpened', () => setConnected(true))
-    obs.once('ConnectionClosed', () => setConnected(false))
-    obs.once('Hello', data => { setMeta(data) })
+    obs.once('ConnectionClosed', () => {
+        setConnected(false)
+        setState(undefined)
+    })
 
-    return { isConnected, meta }
+    obs.once('Hello', data => { setState(data) })
+
+    return { isConnected, state }
 }
 
 const originalEmit = obs.emit.bind(obs);
@@ -45,29 +54,18 @@ obs.emit = (event, ...args) => {
 };
 
 export const ConnectionProvider = ({ children }: PropsWithChildren) => {
-    const { isConnected } = useOsbState()
+    const { isConnected, state } = useOsbState()
     const router = useRouter()    
 
-    useEffect(() => {
-        router.push(`/dashboard/${isConnected ? 'info' : ''}`)
-    }, [isConnected, router])
-
-    const connect = async () => {
-        await obs.connect(host).then(conn => {
-            // setConnected(true)
-        }).catch(err => {
-             // @TODO: Fix Toast error messages
-             console.error("ERR=>",err)
-        })
-    }
-
-    const disconnect = async () => {
-        await obs.disconnect()
-        // setConnected(false)
-    }
+    // useEffect(() => {
+    //     router.push(`/dashboard/${isConnected ? 'info' : ''}`)
+    // }, [isConnected, router])
 
     return <ConnectionContext.Provider value={{
-        isConnected, connect, disconnect, obs
+        isConnected, state,
+        connect: () => obs.connect(host),
+        disconnect: () => obs.disconnect(),
+        _obs: obs
     }}>
         {children}
     </ConnectionContext.Provider>

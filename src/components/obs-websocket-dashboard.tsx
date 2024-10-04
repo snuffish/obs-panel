@@ -6,10 +6,17 @@ import { Badge } from "~/components/ui/badge"
 import { Progress } from "~/components/ui/progress"
 import { Wifi, Server, Video, Mic, BarChart, Camera, Volume2, Globe, Users } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { useConnection } from "~/providers/connection"
+
+// @TODO
+const obsVersion = '27.2.4'
 
 const sourceTypes = ["Webcam", "Microphone", "Game Capture", "Screen Capture", "Browser Source"]
 
 export function ObsWebsocketDashboard() {
+  const { isConnected, state } = useConnection()
+
+
   const [connectionStatus, setConnectionStatus] = useState("Disconnected")
   const [serverInfo, setServerInfo] = useState({
     obsVersion: "",
@@ -111,10 +118,10 @@ export function ObsWebsocketDashboard() {
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Connection Status</CardTitle>
-            <Wifi className={connectionStatus === "Connected" ? "text-green-500" : "text-red-500"} />
+            <Wifi className={isConnected ? "text-green-500" : "text-red-500"} />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{connectionStatus}</div>
+            <div className="text-2xl font-bold">{isConnected ? 'Connected' : 'Disconnected'}</div>
           </CardContent>
         </Card>
         <Card>
@@ -123,8 +130,8 @@ export function ObsWebsocketDashboard() {
             <Server className="text-neutral-500 dark:text-neutral-400" />
           </CardHeader>
           <CardContent>
-            <div className="text-sm">OBS: {serverInfo.obsVersion}</div>
-            <div className="text-sm">WebSocket: {serverInfo.websocketVersion}</div>
+            <div className="text-sm">OBS: {obsVersion}</div>
+            <div className="text-sm">WebSocket: {state?.obsWebSocketVersion ? state.obsWebSocketVersion : "?"}</div>
           </CardContent>
         </Card>
         <Card>
