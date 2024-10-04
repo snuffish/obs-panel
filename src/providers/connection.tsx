@@ -5,25 +5,29 @@ import {
   createContext,
   type PropsWithChildren,
   useContext,
-  useEffect,
   useState,
 } from 'react'
 
-const obs = new OBSWebSocket()
+const $obs = new OBSWebSocket()
 
+const originalEmit = $obs.emit.bind($obs)
+$obs.emit = (event, ...args) => {
+  console.log(`Event emitted: ${event}`, ...args)
+  return originalEmit(event, ...args)
+}
+
+// @TODO: Fix settings for this
 const host = 'ws://localhost:4455'
 
-type State = Awaited<ReturnType<ConnectionContextType['connect']>>
+type ConnectResponse = Awaited<ReturnType<typeof $obs.connect>>
+type State = Omit<Awaited<ConnectResponse>, 'negotiatedRpcVersion'>
 
 type ConnectionContextType = {
   isConnected: boolean
   state?: State
-  connect: (host: string) => Promise<{
-    obsWebSocketVersion?: string
-    rpcVersion?: number
-  }>
+  connect: () => Promise<ConnectResponse>
   disconnect: () => Promise<void>
-  _obs: OBSWebSocket
+  $obs: OBSWebSocket
 }
 
 const ConnectionContext = createContext<ConnectionContextType | undefined>(
@@ -44,23 +48,17 @@ const useOsbState = () => {
   const [isConnected, setConnected] = useState(false)
   const [state, setState] = useState<State | undefined>()
 
-  obs.once('ConnectionOpened', () => setConnected(true))
-  obs.once('ConnectionClosed', () => {
+  $obs.once('ConnectionOpened', () => setConnected(true))
+  $obs.once('ConnectionClosed', () => {
     setConnected(false)
     setState(undefined)
   })
 
-  obs.once('Hello', (data) => {
+  $obs.once('Hello', (data) => {
     setState(data)
   })
 
   return { isConnected, state }
-}
-
-const originalEmit = obs.emit.bind(obs)
-obs.emit = (event, ...args) => {
-  console.log(`Event emitted: ${event}`, ...args)
-  return originalEmit(event, ...args)
 }
 
 export const ConnectionProvider = ({ children }: PropsWithChildren) => {
@@ -74,11 +72,11 @@ export const ConnectionProvider = ({ children }: PropsWithChildren) => {
   return (
     <ConnectionContext.Provider
       value={{
+        $obs,
         isConnected,
         state,
-        connect: () => obs.connect(host),
-        disconnect: () => obs.disconnect(),
-        _obs: obs,
+        connect: () => $obs.connect(host),
+        disconnect: () => $obs.disconnect(),
       }}
     >
       {children}
