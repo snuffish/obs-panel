@@ -24,7 +24,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-import { useConnection } from '~/providers/connection'
+import { useConnectionStore } from '~/store'
 
 // @TODO
 const obsVersion = '27.2.4'
@@ -38,7 +38,7 @@ const sourceTypes = [
 ]
 
 export function ObsWebsocketDashboard() {
-  const { isConnected, state } = useConnection()
+  const isConnected = useConnectionStore(state => state.isConnected)
 
   const [connectionStatus, setConnectionStatus] = useState('Disconnected')
   const [serverInfo, setServerInfo] = useState({
@@ -161,7 +161,7 @@ export function ObsWebsocketDashboard() {
             <div className='text-sm'>OBS: {obsVersion}</div>
             <div className='text-sm'>
               WebSocket:{' '}
-              {state?.obsWebSocketVersion ? state.obsWebSocketVersion : '?'}
+              {/* {state?.obsWebSocketVersion ? state.obsWebSocketVersion : '?'} */}
             </div>
           </CardContent>
         </Card>

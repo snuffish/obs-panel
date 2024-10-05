@@ -6,8 +6,6 @@ import { Card, CardContent } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Edit2, Check, X } from 'lucide-react'
-import { OBSResponseTypes } from 'obs-websocket-js'
-import { useConnection } from '~/providers/connection'
 
 // Simulated OBS scene data
 const initialScenes = [

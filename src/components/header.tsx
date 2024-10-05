@@ -10,11 +10,11 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { type PropsWithChildren } from 'react'
-import { useConnection } from '../providers/connection'
 import { Button, type ButtonProps } from './ui/button'
+import { useConnectionStore } from '~/store'
 
 const ConnectButton = () => {
-  const { isConnected, connect, disconnect } = useConnection()
+  const { isConnected, connect, disconnect } = useConnectionStore()
 
   return (
     <Button
@@ -36,17 +36,11 @@ const SectionButton = ({
     href?: string
   }
 >) => {
-  const { isConnected } = useConnection()
-
-  const disabled = !isConnected
-
-  const button = (
-    <Button {...props} disabled={disabled}>
-      {children}
-    </Button>
+  return (
+    <Link href={href}>
+      <Button {...props}>{children}</Button>
+    </Link>
   )
-
-  return isConnected ? <Link href={href}>{button}</Link> : button
 }
 
 const Header = () => {
