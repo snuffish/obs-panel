@@ -2,6 +2,7 @@ import React from 'react'
 import { type PropsWithChildren } from 'react'
 import { BottomNavWithSettingsComponent } from '~/components/bottom-nav-with-settings'
 import Header from '~/components/header'
+import ReactQueryProvider from '~/providers/ReactQueryProvider'
 
 export default function DashboardLayout({ children }: PropsWithChildren) {
   return (

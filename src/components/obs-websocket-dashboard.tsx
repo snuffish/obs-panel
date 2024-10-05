@@ -24,25 +24,18 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-import { useConnectionStore } from '~/store'
-
-// @TODO
-const obsVersion = '27.2.4'
-
-const sourceTypes = [
-  'Webcam',
-  'Microphone',
-  'Game Capture',
-  'Screen Capture',
-  'Browser Source',
-]
+import { useConnectionStore } from '~/store/connection'
+import { useInputStore } from '~/store/input'
 
 export function ObsWebsocketDashboard() {
-  const isConnected = useConnectionStore(state => state.isConnected)
+  const { isConnected, version } = useConnectionStore((state) => state)
+  const inputSources = useInputStore((state) => state.inputs)
+
+  const conn = useConnectionStore()
+  console.log(conn, 'conn')
 
   const [connectionStatus, setConnectionStatus] = useState('Disconnected')
   const [serverInfo, setServerInfo] = useState({
-    obsVersion: '',
     websocketVersion: '',
   })
   const [stats, setStats] = useState({
@@ -53,55 +46,8 @@ export function ObsWebsocketDashboard() {
   })
   const [streamStatus, setStreamStatus] = useState('Offline')
   const [cpuHistory, setCpuHistory] = useState([])
-  const [activeSources, setActiveSources] = useState([
-    {
-      id: 1,
-      name: `OBSBOT`,
-      type: 'video',
-      status: 'Active',
-    },
-    {
-      id: 2,
-      name: `iPhone`,
-      type: 'video',
-      status: 'Active',
-    },
-    {
-      id: 3,
-      name: `Channel 1`,
-      type: 'audio',
-      status: 'Active',
-    },
-    {
-      id: 3,
-      name: `Channel 2`,
-      type: 'audio',
-      status: 'Inactive',
-    },
-    {
-      id: 3,
-      name: `Channel 3`,
-      type: 'audio',
-      status: 'Inactive',
-    },
-    {
-      id: 3,
-      name: `Channel 4`,
-      type: 'audio',
-      status: 'Inactive',
-    },
-  ])
 
   useEffect(() => {
-    // Simulating connection and data updates
-    const connect = setTimeout(() => {
-      setConnectionStatus('Connected')
-      setServerInfo({
-        obsVersion: '27.2.4',
-        websocketVersion: '5.0.1',
-      })
-    }, 2000)
-
     const newCpuUsage = Math.random() * 100
     setStats((prev) => ({
       cpuUsage: newCpuUsage,
@@ -158,11 +104,8 @@ export function ObsWebsocketDashboard() {
             <Server className='text-neutral-500 dark:text-neutral-400' />
           </CardHeader>
           <CardContent>
-            <div className='text-sm'>OBS: {obsVersion}</div>
-            <div className='text-sm'>
-              WebSocket:{' '}
-              {/* {state?.obsWebSocketVersion ? state.obsWebSocketVersion : '?'} */}
-            </div>
+            <div className='text-sm'>OBS: {version?.obsVersion}</div>
+            <div className='text-sm'>WebSocket: {version?.obsWebSocketVersion}</div>
           </CardContent>
         </Card>
         <Card>
@@ -192,7 +135,7 @@ export function ObsWebsocketDashboard() {
             <Mic className='text-neutral-500 dark:text-neutral-400' />
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>{stats.activeSources}</div>
+            <div className='text-2xl font-bold'>{inputSources.length}</div>
           </CardContent>
         </Card>
         <Card className='col-span-full'>
@@ -274,29 +217,22 @@ export function ObsWebsocketDashboard() {
         </CardHeader>
         <CardContent>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
-            {activeSources.map((source) => (
+            {inputSources.map(({ inputUuid, inputKind, inputName }) => (
               <div
-                key={source.id}
+                key={inputUuid}
                 className='flex items-center space-x-4 rounded-md border border-neutral-200 p-2 dark:border-neutral-800'
               >
-                {source.type === 'video' ? (
-                  <Camera className='text-blue-500' />
-                ) : (
+                {inputKind === 'wasapi_input_capture' ? (
                   <Volume2 className='text-green-500' />
+                ) : (
+                  <Camera className='text-blue-500' />
                 )}
                 <div className='flex-1'>
-                  <div className='font-medium'>{source.name}</div>
+                  <div className='font-medium'>{inputName}</div>
                   <div className='text-sm text-neutral-500 dark:text-neutral-400'>
-                    {source.type}
+                    {inputKind}
                   </div>
                 </div>
-                <Badge
-                  variant={
-                    source.status === 'Active' ? 'default' : 'destructive'
-                  }
-                >
-                  {source.status}
-                </Badge>
               </div>
             ))}
           </div>

@@ -1,4 +1,5 @@
 'use client'
+ 
 import {
   InfoIcon,
   MonitorIcon,
@@ -11,7 +12,7 @@ import {
 import Link from 'next/link'
 import { type PropsWithChildren } from 'react'
 import { Button, type ButtonProps } from './ui/button'
-import { useConnectionStore } from '~/store'
+import { useConnectionStore } from '~/store/connection'
 
 const ConnectButton = () => {
   const { isConnected, connect, disconnect } = useConnectionStore()
