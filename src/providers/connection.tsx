@@ -1,6 +1,6 @@
 'use client'
 import { useRouter } from 'next/navigation'
-import OBSWebSocket from 'obs-websocket-js'
+import { OBSWebSocket } from 'obs-websocket-js'
 import {
   createContext,
   type PropsWithChildren,
@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react'
 
-const $obs = new OBSWebSocket()
+export const $obs = new OBSWebSocket()
 
 const originalEmit = $obs.emit.bind($obs)
 $obs.emit = (event, ...args) => {
@@ -56,6 +56,10 @@ const useOsbState = () => {
 
   $obs.once('Hello', (data) => {
     setState(data)
+
+    $obs.once('Identified', data => {
+      $obs.call('GetSceneList').then(res => console.log("GetSceneList====>",res)).catch(err => console.log("ERR=>",err))
+    })
   })
 
   return { isConnected, state }
@@ -83,3 +87,11 @@ export const ConnectionProvider = ({ children }: PropsWithChildren) => {
     </ConnectionContext.Provider>
   )
 }
+
+
+// $obs.call('GetSceneList').then(res => console.log(res))
+// $obs.call('SetSceneName', {
+//   sceneName: 'Min Dator',
+//   newSceneName: 'Monitor Scene'
+// })
+

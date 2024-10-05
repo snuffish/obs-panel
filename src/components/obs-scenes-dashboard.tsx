@@ -6,6 +6,8 @@ import { Card, CardContent } from '~/components/ui/card'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Edit2, Check, X } from 'lucide-react'
+import { OBSResponseTypes } from 'obs-websocket-js'
+import { useConnection } from '~/providers/connection'
 
 // Simulated OBS scene data
 const initialScenes = [
@@ -20,20 +22,11 @@ const initialScenes = [
     name: 'Game Capture',
     thumbnail: '/placeholder.svg?height=100&width=150',
     isActive: false,
-  },
-  {
-    id: '3',
-    name: 'Overlay',
-    thumbnail: '/placeholder.svg?height=100&width=150',
-    isActive: false,
-  },
-  {
-    id: '4',
-    name: 'BRB Screen',
-    thumbnail: '/placeholder.svg?height=100&width=150',
-    isActive: false,
-  },
+  }
 ]
+
+
+
 
 export function ObsScenesDashboard() {
   const [scenes, setScenes] = useState(initialScenes)
@@ -99,11 +92,6 @@ export function ObsScenesDashboard() {
                       className={`${scene.isActive ? "'border-primary'" : "''"}`}
                     >
                       <CardContent className='flex items-center space-x-4 p-4'>
-                        <img
-                          src={scene.thumbnail}
-                          alt={`Thumbnail for ${scene.name}`}
-                          className='h-16 w-24 rounded object-cover'
-                        />
                         <div className='flex-grow'>
                           {editingId === scene.id ? (
                             <div className='flex items-center space-x-2'>
