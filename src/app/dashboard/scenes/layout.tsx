@@ -13,8 +13,9 @@ import { type SceneProps } from '~/store/scene'
 import { obs, useConnectionStore, useSceneStore } from '~/store/store'
 
 const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
+  const isConnected = useConnectionStore(state => state.isConnected)
   const currentProgramSceneUuid = useSceneStore(
-    (state) => state.current.currentProgramSceneUuid,
+    state => state.current.currentProgramSceneUuid,
   )
 
   const { data: base64 } = useQuery({
@@ -29,6 +30,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
 
       return res.imageData
     },
+    enabled: isConnected
   })
 
   const [isEdit, setIsEdit] = useState(false)
