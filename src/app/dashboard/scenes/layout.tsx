@@ -1,10 +1,11 @@
 'use client'
 
 import { useQuery } from '@tanstack/react-query'
-import { Check, Edit2, X } from 'lucide-react'
+import { Check, Edit2, Terminal, X } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import { useRef, useState, type PropsWithChildren } from 'react'
+import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
 import { Card, CardContent } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
@@ -12,7 +13,9 @@ import { type SceneProps } from '~/store/scene'
 import { obs, useConnectionStore, useSceneStore } from '~/store/store'
 
 const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
-  const currentProgramSceneUuid = useSceneStore(state => state.current.currentProgramSceneUuid)
+  const currentProgramSceneUuid = useSceneStore(
+    (state) => state.current.currentProgramSceneUuid,
+  )
 
   const { data: base64 } = useQuery({
     queryKey: ['base64', sceneUuid],
@@ -25,7 +28,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
       })
 
       return res.imageData
-    }
+    },
   })
 
   const [isEdit, setIsEdit] = useState(false)
@@ -47,7 +50,13 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
     <Card className=''>
       <CardContent className='flex justify-between space-x-4 p-4'>
         <div className='flex items-center space-x-5'>
-          <Image className='rounded-xl' src={base64} width={150} height={150} alt='snapshot' />
+          <Image
+            className='rounded-xl'
+            src={base64}
+            width={150}
+            height={150}
+            alt='snapshot'
+          />
           {isEdit ? (
             <div className='flex gap-x-2'>
               <Input
@@ -100,10 +109,19 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
 }
 
 export default function ScenesLayout({ children }: PropsWithChildren) {
-  const isConnected = useConnectionStore(state => state.isConnected)
+  const isConnected = useConnectionStore((state) => state.isConnected)
   const { scenes } = useSceneStore()
 
-  if (!isConnected) return <div>Disconnected</div>
+  if (!isConnected)
+    return (
+      <Alert>
+        <Terminal className='h-4 w-4' />
+        <AlertTitle>Heads up!</AlertTitle>
+        <AlertDescription>
+          Disconnected
+        </AlertDescription>
+      </Alert>
+    )
 
   return (
     <div className='col-start-2 -col-end-2'>
