@@ -1,7 +1,11 @@
 'use client'
 
 import { create } from 'zustand'
-import { type OBSEventTypes, type OBSResponseTypes, OBSWebSocket } from 'obs-websocket-js'
+import {
+  type OBSEventTypes,
+  type OBSResponseTypes,
+  OBSWebSocket,
+} from 'obs-websocket-js'
 
 export const host = 'ws://localhost:4455'
 
@@ -134,18 +138,20 @@ export const useInfoStore = create<{
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
 }>((set) => {
-  const setVersion = (version: OBSResponseTypes['GetVersion']) => set({ version })
+  const setVersion = (version: OBSResponseTypes['GetVersion']) =>
+    set({ version })
 
   useConnectionStore.subscribe(({ isConnected }) => {
     if (!isConnected) return
 
-    obs.call('GetVersion')
-    .then((version) => setVersion(version))
-    .catch((err) => console.error('GetVersion error:', err))
+    obs
+      .call('GetVersion')
+      .then((version) => setVersion(version))
+      .catch((err) => console.error('GetVersion error:', err))
   })
 
   return {
     version: {},
-    setVersion
+    setVersion,
   }
 })
