@@ -33,6 +33,7 @@ const ConnectButton = () => {
       await obs.disconnect()
 
       setIsConnected(false)
+      setIdentified(undefined)
     },
     onError: (error) => console.error('Failed to disconnect:', error),
   })

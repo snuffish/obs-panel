@@ -17,27 +17,21 @@ obs.emit = (event, ...args) => {
   return originalEmit.apply(this, [event, ...args])
 }
 
+type Identified = Awaited<ReturnType<typeof obs.connect>>
+
 type ConnectionState = {
   isConnected: boolean
   setIsConnected: (isConnected: boolean) => void
-  setIdentified: (identified: unknown) => void
+  setIdentified: (identified: Identified | undefined) => void
 }
 
 export const useConnectionStore = create<ConnectionState>((set) => ({
   isConnected: false,
-  identified: {},
-  setIsConnected: (isConnected: boolean) => {
-    set({ isConnected })
-
-    if (!isConnected) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      set({ identified: {} })
-    }
-  },
+  identified: undefined,
+  setIsConnected: (isConnected: boolean) => set({ isConnected }),
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  setIdentified: (identified: unknown) => set({ identified }),
+  setIdentified: (identified: Identified) => set({ identified }),
 }))
 
 export type CurrentScene = {
