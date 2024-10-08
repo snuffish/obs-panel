@@ -23,8 +23,13 @@ import {
   Clock,
   Film,
 } from 'lucide-react'
+import { useConnectionStore } from '~/store/store'
+import Disconnected from './Disconnected'
 
 export function ObsRecordingDashboard() {
+  const isConnected = useConnectionStore((state) => state.isConnected)
+
+  
   const [isRecording, setIsRecording] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [recordingTime, setRecordingTime] = useState(0)
@@ -38,7 +43,7 @@ export function ObsRecordingDashboard() {
     quality: 'High',
   })
   const [diskSpace, setDiskSpace] = useState(500) // in GB
-
+  
   useEffect(() => {
     let interval
     if (isRecording && !isPaused) {
@@ -49,7 +54,7 @@ export function ObsRecordingDashboard() {
     }
     return () => clearInterval(interval)
   }, [isRecording, isPaused])
-
+  
   const formatTime = (seconds) => {
     const hrs = Math.floor(seconds / 3600)
     const mins = Math.floor((seconds % 3600) / 60)
@@ -61,21 +66,23 @@ export function ObsRecordingDashboard() {
     setIsRecording(true)
     setIsPaused(false)
   }
-
+  
   const handlePauseRecording = () => {
     setIsPaused(true)
   }
-
+  
   const handleResumeRecording = () => {
     setIsPaused(false)
   }
-
+  
   const handleStopRecording = () => {
     setIsRecording(false)
     setIsPaused(false)
     setRecordingTime(0)
     setFileSize(0)
   }
+  
+  if (!isConnected) return <Disconnected />
 
   return (
     <div className='space-y-4 p-4'>

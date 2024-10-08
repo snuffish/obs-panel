@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Home, Settings, User, Wifi } from 'lucide-react'
+import { useRef, useState } from 'react'
+import { Home, Settings, User } from 'lucide-react'
 import { Button } from '~/components/ui/button'
 import {
   Dialog,
@@ -13,12 +13,29 @@ import {
 } from '~/components/ui/dialog'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
-import { Switch } from '~/components/ui/switch'
-import { useLocalStorage } from '~/hooks/useLocalStorage'
+import { useServerSettings } from '~/hooks/useServerSettings'
+import { useMutation } from '@tanstack/react-query'
 
 export function BottomNavWithSettingsComponent() {
   const [isOpen, setIsOpen] = useState(false)
-  const [host, setHost] = useLocalStorage('host', 'localhost:4455')
+  const { settings, setHost, setPort } = useServerSettings()
+
+  const hostRef = useRef<HTMLInputElement>(null)
+  const portRef = useRef<HTMLInputElement>(null)
+
+  const { mutate: saveSettings } = useMutation({
+    mutationFn: async () => {
+      const host = hostRef.current?.value ?? ''
+      const port = portRef.current?.value ?? ''
+
+      setHost(host)
+      setPort(port)
+    },
+    onSuccess: () => {
+      setIsOpen(false)
+    },
+    onError: (error) => console.error('Failed to save settings:', error),
+  })
 
   return (
     <div className='fixed bottom-0 left-0 right-0 border-t border-neutral-200 bg-white p-2 dark:border-neutral-800 dark:bg-neutral-950'>
@@ -47,32 +64,13 @@ export function BottomNavWithSettingsComponent() {
             </DialogHeader>
             <div className='grid gap-4 py-4'>
               <div className='grid grid-cols-4 items-center gap-4'>
-                <Label htmlFor='name' className='text-right'>
-                  Name
-                </Label>
-                <Input
-                  id='name'
-                  defaultValue='John Doe'
-                  className='col-span-3'
-                />
-              </div>
-              <div className='grid grid-cols-4 items-center gap-4'>
-                <Label htmlFor='username' className='text-right'>
-                  Username
-                </Label>
-                <Input
-                  id='username'
-                  defaultValue='johndoe'
-                  className='col-span-3'
-                />
-              </div>
-              <div className='grid grid-cols-4 items-center gap-4'>
                 <Label htmlFor='server' className='text-right'>
                   Server
                 </Label>
                 <Input
+                  ref={hostRef}
                   id='server'
-                  defaultValue={host}
+                  defaultValue={settings.host}
                   className='col-span-3'
                 />
               </div>
@@ -80,9 +78,14 @@ export function BottomNavWithSettingsComponent() {
                 <Label htmlFor='port' className='text-right'>
                   Port
                 </Label>
-                <Input id='port' defaultValue='4455' className='col-span-3' />
+                <Input
+                  ref={portRef}
+                  id='port'
+                  defaultValue={settings.port}
+                  className='col-span-3'
+                />
               </div>
-              <div className='grid grid-cols-4 items-center gap-4'>
+              {/* <div className='grid grid-cols-4 items-center gap-4'>
                 <Label htmlFor='auto-connect' className='text-right'>
                   Auto Connect
                 </Label>
@@ -91,13 +94,15 @@ export function BottomNavWithSettingsComponent() {
                   defaultChecked
                   className='col-span-3'
                 />
-              </div>
+              </div> */}
             </div>
             <div className='flex justify-between'>
               <Button intent='outline' onClick={() => setIsOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={() => setIsOpen(false)}>Save Changes</Button>
+              <Button onClick={() => saveSettings()} intent='dark'>
+                Save Changes
+              </Button>
             </div>
           </DialogContent>
         </Dialog>

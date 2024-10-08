@@ -5,6 +5,7 @@ import { Check, Edit2, Terminal, X } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
 import { useRef, useState, type PropsWithChildren } from 'react'
+import Disconnected from '~/components/Disconnected'
 import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
 import { Card, CardContent } from '~/components/ui/card'
@@ -44,12 +45,11 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
     mutationFn: async () => {
       const newSceneName = newSceneNameRef.current?.value ?? ''
 
-      obs
+      await obs
         .call('SetSceneName', {
           sceneUuid,
           newSceneName,
         })
-        .catch((error) => console.error('Failed to set scene name:', error))
     },
     onSuccess: () => setIsEdit(false),
     onError: (error) => console.error('Failed to set scene name:', error),
@@ -131,14 +131,7 @@ export default function ScenesLayout({ children }: PropsWithChildren) {
   const isConnected = useConnectionStore((state) => state.isConnected)
   const scenes = useSceneStore(state => state.scenes)
 
-  if (!isConnected)
-    return (
-      <Alert>
-        <Terminal className='h-4 w-4' />
-        <AlertTitle>Heads up!</AlertTitle>
-        <AlertDescription>Disconnected</AlertDescription>
-      </Alert>
-    )
+  if (!isConnected) return <Disconnected />
 
   return (
     <div className='col-start-2 -col-end-2'>

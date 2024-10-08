@@ -6,6 +6,7 @@ import {
   type OBSResponseTypes,
   OBSWebSocket,
 } from 'obs-websocket-js'
+import { useQuery } from '@tanstack/react-query'
 
 export const host = 'ws://localhost:4455'
 

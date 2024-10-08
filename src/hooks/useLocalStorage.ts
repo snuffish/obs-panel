@@ -20,5 +20,5 @@ export const useLocalStorage = (key: string, _default = '') => {
         }
     })
 
-    return [item as string, setItem] as const
+    return [item!, setItem] as const
 }

@@ -24,7 +24,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-import { useConnectionStore, useInfoStore, useInputStore } from '~/store/store'
+import { obs, useConnectionStore, useInfoStore, useInputStore } from '~/store/store'
+import { useQuery } from '@tanstack/react-query'
 
 const ServerInfo = () => {
   const isConnected = useConnectionStore((state) => state.isConnected)
@@ -192,12 +193,13 @@ const CPUUsageHistory = () => {
 const SystemResources = () => {
   const isConnected = useConnectionStore((state) => state.isConnected)
 
-  const stats = {
-    cpuUsage: 0,
-    memoryUsage: 0,
-    freeSpace: 0,
-    activeSources: 0,
-  }
+  const { data: stats } = useQuery({
+    queryFn: async () => {
+      return await obs.call('GetStats')
+    },
+    refetchInterval: 5000,
+    enabled: isConnected
+  })
 
   if (!isConnected) return null
 
@@ -210,23 +212,23 @@ const SystemResources = () => {
         <div>
           <div className='mb-1 flex justify-between'>
             <div>CPU Usage</div>
-            <div>{0}%</div>
+            <div>{stats?.cpuUsage.toFixed(2)}%</div>
           </div>
-          <Progress value={0} />
+          {/* <Progress value={stats?.cpuUsage} /> */}
         </div>
         <div>
           <div className='mb-1 flex justify-between'>
             <div>Memory Usage</div>
-            <div>{0} MB</div>
+            <div>{stats?.memoryUsage.toFixed(2)} MB</div>
           </div>
-          <Progress value={stats.memoryUsage} />
+          {/* <Progress value={stats?.memoryUsage}  /> */}
         </div>
         <div>
           <div className='mb-1 flex justify-between'>
             <div>Free Disk Space</div>
-            <div>{0} GB</div>
+            <div>{stats?.availableDiskSpace.toFixed(2)} MB</div>
           </div>
-          <Progress value={(0 / 10) * 100} />
+          {/* <Progress value={50} max={100} /> */}
         </div>
       </CardContent>
     </Card>

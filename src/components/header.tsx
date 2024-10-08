@@ -14,15 +14,15 @@ import { type PropsWithChildren } from 'react'
 import { Button, type ButtonProps } from './ui/button'
 import { obs, useConnectionStore } from '~/store/store'
 import { useMutation } from '@tanstack/react-query'
-import { useLocalStorage } from '~/hooks/useLocalStorage'
+import { useServerSettings } from '~/hooks/useServerSettings'
 
 const ConnectButton = () => {
-  const [host] = useLocalStorage('host', 'localhost:4455')
   const { isConnected, setIsConnected, setIdentified } = useConnectionStore()
+  const { settings } = useServerSettings()
 
   const { mutate: connect } = useMutation({
     mutationFn: async () => {
-      const session = await obs.connect(`ws://${host}`)
+      const session = await obs.connect(`ws://${settings.host}:${settings.port}`)
 
       setIsConnected(true)
       setIdentified(session)
