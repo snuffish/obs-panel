@@ -1,5 +1,5 @@
 'use client'
- 
+
 import {
   InfoIcon,
   MonitorIcon,
@@ -12,10 +12,35 @@ import {
 import Link from 'next/link'
 import { type PropsWithChildren } from 'react'
 import { Button, type ButtonProps } from './ui/button'
-import { useConnectionStore } from '~/store/connection'
+import { host, obs } from '~/hooks/obs'
+import { useConnectionStore } from '~/store/store'
 
 const ConnectButton = () => {
-  const { isConnected, connect, disconnect } = useConnectionStore()
+  const { isConnected, setIsConected, setIdentified } = useConnectionStore()
+
+  const connect = () => {
+    obs
+      .connect(host)
+      .then((session) => {
+        setIsConected(true)
+        setIdentified(session)
+      })
+      .catch((error) => {
+        throw error
+      })
+  }
+
+  const disconnect = () => {
+    obs
+      .disconnect()
+      .then(() => {
+        setIsConected(false)
+        setIdentified({})
+      })
+      .catch((error) => {
+        throw error
+      })
+  }
 
   return (
     <Button

@@ -26,48 +26,28 @@ import {
 } from 'recharts'
 import { useConnectionStore } from '~/store/connection'
 import { useInputStore } from '~/store/input'
+import { useQuery } from '@tanstack/react-query'
+import { obs, useObs } from '~/hooks/obs'
 
 export function ObsWebsocketDashboard() {
-  const { isConnected, version } = useConnectionStore((state) => state)
-  const inputSources = useInputStore((state) => state.inputs)
+  // const { data: systemStats } = useObs('GetStats')
+  // const { data: version } = useObs('GetVersion')
+  // const { data: inputSources } = useObs('GetInputList')
+  // console.log(inputSources , 'inputSources')
+  const { isConnected } = useConnectionStore()
+
+  // const inputSources = useInputStore((state) => state.inputs)
+
 
   const conn = useConnectionStore()
-  console.log(conn, 'conn')
 
-  const [connectionStatus, setConnectionStatus] = useState('Disconnected')
-  const [serverInfo, setServerInfo] = useState({
-    websocketVersion: '',
-  })
   const [stats, setStats] = useState({
     cpuUsage: 0,
     memoryUsage: 0,
     freeSpace: 0,
     activeSources: 0,
   })
-  const [streamStatus, setStreamStatus] = useState('Offline')
-  const [cpuHistory, setCpuHistory] = useState([])
 
-  useEffect(() => {
-    const newCpuUsage = Math.random() * 100
-    setStats((prev) => ({
-      cpuUsage: newCpuUsage,
-      memoryUsage: Math.random() * 100,
-      freeSpace: Math.random() * 1000,
-      activeSources: Math.floor(Math.random() * 10) + 1,
-    }))
-    setCpuHistory((prev) => [
-      ...prev.slice(-19),
-      { time: new Date().toLocaleTimeString(), usage: newCpuUsage },
-    ])
-    setStreamStatus(Math.random() > 0.5 ? 'Live' : 'Offline')
-
-    // Simulating active sources
-
-    return () => {
-      // clearTimeout(connect)
-      // clearInterval(interval)
-    }
-  }, [])
 
   const streamInfo = {
     bitrate: Math.floor(Math.random() * 5000) + 2000,
@@ -112,18 +92,14 @@ export function ObsWebsocketDashboard() {
           <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
             <CardTitle className='text-sm font-medium'>Stream Status</CardTitle>
             <Video
-              className={
-                streamStatus === 'Live'
-                  ? 'text-red-500'
-                  : 'text-neutral-500 dark:text-neutral-400'
-              }
+             className='text-red-500'
             />
           </CardHeader>
           <CardContent>
             <Badge
-              variant={streamStatus === 'Live' ? 'destructive' : 'secondary'}
+            variant='destructive'
             >
-              {streamStatus}
+              Live
             </Badge>
           </CardContent>
         </Card>
@@ -135,7 +111,7 @@ export function ObsWebsocketDashboard() {
             <Mic className='text-neutral-500 dark:text-neutral-400' />
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>{inputSources.length}</div>
+            <div className='text-2xl font-bold'>{inputSources?.inputs.length}</div>
           </CardContent>
         </Card>
         <Card className='col-span-full'>
@@ -172,23 +148,23 @@ export function ObsWebsocketDashboard() {
             <div>
               <div className='mb-1 flex justify-between'>
                 <div>CPU Usage</div>
-                <div>{stats.cpuUsage.toFixed(1)}%</div>
+                <div>{systemStats?.cpuUsage.toFixed(2)}%</div>
               </div>
-              <Progress value={stats.cpuUsage} />
+              <Progress value={systemStats?.cpuUsage} />
             </div>
             <div>
               <div className='mb-1 flex justify-between'>
                 <div>Memory Usage</div>
-                <div>{stats.memoryUsage.toFixed(1)}%</div>
+                <div>{systemStats?.memoryUsage.toFixed(2)} MB</div>
               </div>
               <Progress value={stats.memoryUsage} />
             </div>
             <div>
               <div className='mb-1 flex justify-between'>
                 <div>Free Disk Space</div>
-                <div>{stats.freeSpace.toFixed(2)} GB</div>
+                <div>{systemStats?.availableDiskSpace.toFixed(2)} GB</div>
               </div>
-              <Progress value={(stats.freeSpace / 10) * 100} />
+              <Progress value={((systemStats?.availableDiskSpace ?? 0) / 10) * 100} />
             </div>
           </CardContent>
         </Card>
@@ -199,7 +175,7 @@ export function ObsWebsocketDashboard() {
           <CardContent>
             <div className='h-[200px]'>
               <ResponsiveContainer width='100%' height='100%'>
-                <LineChart data={cpuHistory}>
+                <LineChart data={undefined}>
                   <CartesianGrid strokeDasharray='3' />
                   <XAxis dataKey='time' />
                   <YAxis />
@@ -217,7 +193,7 @@ export function ObsWebsocketDashboard() {
         </CardHeader>
         <CardContent>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
-            {inputSources.map(({ inputUuid, inputKind, inputName }) => (
+            {inputSources?.inputs.map(({ inputUuid, inputKind, inputName }) => (
               <div
                 key={inputUuid}
                 className='flex items-center space-x-4 rounded-md border border-neutral-200 p-2 dark:border-neutral-800'

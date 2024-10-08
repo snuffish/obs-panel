@@ -1,4 +1,4 @@
-import { OBSResponseTypes } from 'obs-websocket-js'
+import { type OBSResponseTypes } from 'obs-websocket-js'
 import { create } from 'zustand'
 import { obs } from './connection'
 

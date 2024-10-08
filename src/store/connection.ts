@@ -1,5 +1,5 @@
 import OBSWebSocket, {
-    OBSResponseTypes
+    type OBSResponseTypes
 } from 'obs-websocket-js'
 import { create } from 'zustand'
 
@@ -23,7 +23,7 @@ export const useConnectionStore = create<{
   disconnect: () => void
 }>((set) => {
   obs
-    .on('ConnectionOpened', async () => {
+    .on('ConnectionOpened', () => {
       set({ isConnected: true })
     })
     .on('ConnectionClosed', (err) => {
@@ -31,25 +31,26 @@ export const useConnectionStore = create<{
       set({ isConnected: false })
     })
     .on('ConnectionError', (err) => console.error('Connection error:', err))
-    .on('Hello', async ({ authentication }) => set({ session: authentication }))
-    .on('Identified', async () => {
-      const version = (await obs
+    .on('Hello', ({ authentication }) => {
+      set({ session: authentication })
+    })
+    .on('Identified', () => {
+      const version = obs
         .call('GetVersion')
-        .catch((err) =>
-          console.error('GetVersion error:', err),
-        )) as OBSResponseTypes['GetVersion']
+        .catch((err) => console.error('GetVersion error:', err)
+        ) as unknown as OBSResponseTypes['GetVersion']
 
       set({ version })
     })
 
   return {
     isConnected: false,
-    connect: async () => {
-      const session = await obs
-        .connect(host)
-        .catch((err) => console.error('Connection error:', err)) as Required<Session>
-      
-        set({ session })
+    connect: () => {
+      obs.connect(host)
+        .then((session) => {
+          set({ session: session as unknown as Session })
+        })
+        .catch((err) => console.error('Connection error:', err))
     },
     disconnect: () => {
       obs.disconnect().catch((err) => console.error('Disconnect error:', err))
