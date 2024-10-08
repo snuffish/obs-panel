@@ -13,9 +13,9 @@ import { type SceneProps } from '~/store/scene'
 import { obs, useConnectionStore, useSceneStore } from '~/store/store'
 
 const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
-  const isConnected = useConnectionStore(state => state.isConnected)
+  const isConnected = useConnectionStore((state) => state.isConnected)
   const currentProgramSceneUuid = useSceneStore(
-    state => state.current.currentProgramSceneUuid,
+    (state) => state.current.currentProgramSceneUuid,
   )
 
   const { data: base64 } = useQuery({
@@ -30,7 +30,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
 
       return res.imageData
     },
-    enabled: isConnected
+    enabled: isConnected,
   })
 
   const [isEdit, setIsEdit] = useState(false)
@@ -52,13 +52,15 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
     <Card className=''>
       <CardContent className='flex justify-between space-x-4 p-4'>
         <div className='flex items-center space-x-5'>
-          <Image
-            className='rounded-xl'
-            src={base64}
-            width={150}
-            height={150}
-            alt='snapshot'
-          />
+          {base64 && (
+            <Image
+              className='rounded-xl'
+              src={base64}
+              width={150}
+              height={150}
+              alt='snapshot'
+            />
+          )}
           {isEdit ? (
             <div className='flex gap-x-2'>
               <Input
@@ -119,9 +121,7 @@ export default function ScenesLayout({ children }: PropsWithChildren) {
       <Alert>
         <Terminal className='h-4 w-4' />
         <AlertTitle>Heads up!</AlertTitle>
-        <AlertDescription>
-          Disconnected
-        </AlertDescription>
+        <AlertDescription>Disconnected</AlertDescription>
       </Alert>
     )
 
