@@ -9,8 +9,7 @@ import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
 import { Card, CardContent } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
-import { type SceneProps } from '~/store/scene'
-import { obs, useConnectionStore, useSceneStore } from '~/store/store'
+import { obs, type SceneProps, useConnectionStore, useSceneStore } from '~/store/store'
 
 const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
   const isConnected = useConnectionStore((state) => state.isConnected)

@@ -1,7 +1,7 @@
 'use client'
 
 import { create } from 'zustand'
-import { type OBSEventTypes, OBSResponseTypes, OBSWebSocket } from 'obs-websocket-js'
+import { type OBSEventTypes, type OBSResponseTypes, OBSWebSocket } from 'obs-websocket-js'
 
 export const host = 'ws://localhost:4455'
 
@@ -93,6 +93,8 @@ type SourceProps = {
   unversionedInputKind: string
 }
 
+// GetSourceActive
+// GetSourceScreenshot
 export const useInputStore = create<{
   inputs: SourceProps[]
   setInputs: (inputs: SourceProps[]) => void
