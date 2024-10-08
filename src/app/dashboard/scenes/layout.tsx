@@ -17,6 +17,9 @@ import {
 } from '~/store/store'
 
 const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
+  const [isEdit, setIsEdit] = useState(false)
+  const newSceneNameRef = useRef<HTMLInputElement>(null)
+
   const isConnected = useConnectionStore((state) => state.isConnected)
   const currentProgramSceneUuid = useSceneStore(
     (state) => state.current.currentProgramSceneUuid,
@@ -36,9 +39,6 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
     },
     enabled: isConnected,
   })
-
-  const [isEdit, setIsEdit] = useState(false)
-  const newSceneNameRef = useRef<HTMLInputElement>(null)
 
   const { mutateAsync: changeSceneName } = useMutation({
     mutationFn: async () => {
@@ -129,7 +129,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
 
 export default function ScenesLayout({ children }: PropsWithChildren) {
   const isConnected = useConnectionStore((state) => state.isConnected)
-  const { scenes } = useSceneStore()
+  const scenes = useSceneStore(state => state.scenes)
 
   if (!isConnected)
     return (
