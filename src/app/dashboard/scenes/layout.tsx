@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Check, Edit2, Terminal, X } from 'lucide-react'
 import Image from 'next/image'
 import React from 'react'
@@ -35,17 +35,19 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
   const [isEdit, setIsEdit] = useState(false)
   const newSceneNameRef = useRef<HTMLInputElement>(null)
 
-  const editSceneNameHandler = () => {
-    const newSceneName = newSceneNameRef.current?.value ?? ''
-    obs
-      .call('SetSceneName', {
-        sceneUuid: sceneUuid,
-        newSceneName: newSceneName,
-      })
-      .catch((error) => console.error('Failed to set scene name:', error))
+  const { mutateAsync: changeSceneName } = useMutation({
+    mutationFn: async () => {
+      const newSceneName = newSceneNameRef.current?.value ?? ''
 
-    setIsEdit(false)
-  }
+      obs
+        .call('SetSceneName', {
+          sceneUuid, newSceneName
+        })
+        .catch((error) => console.error('Failed to set scene name:', error))
+    },
+    onSuccess: () => setIsEdit(false),
+    onError: (error) => console.error('Failed to set scene name:', error),
+  })
 
   return (
     <Card className=''>
@@ -66,13 +68,12 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
                 ref={newSceneNameRef}
                 className='flex-grow'
                 defaultValue={sceneName}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') editSceneNameHandler()
+                onKeyDown={async (e) => {
+                  if (e.key === 'Enter') await changeSceneName()
                   if (e.key === 'Escape') setIsEdit(false)
                 }}
               />
-              {/* <Button onClick={editSceneNameHandler} intent='dark' size='icon'> */}
-              <Button intent='dark' size='icon'>
+              <Button onClick={async () => await changeSceneName()} intent='dark' size='icon'>
                 <Check className='h-4 w-4' />
               </Button>
               <Button
@@ -88,9 +89,9 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
           )}
         </div>
         <div className='flex items-center space-x-4'>
-          {/* <Button size='icon' intent='ghost'>
+          <Button size='icon' intent='ghost'>
             <Edit2 onClick={() => setIsEdit(true)} className='h-4 w-4' />
-          </Button> */}
+          </Button>
           {sceneUuid === currentProgramSceneUuid ? (
             <Button intent='dark'>Active</Button>
           ) : (
