@@ -12,7 +12,7 @@ import { type SceneProps } from '~/store/scene'
 import { obs, useConnectionStore, useSceneStore } from '~/store/store'
 
 const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
-  const currentProgramSceneUuid = useSceneStore((state) => state.current.currentProgramSceneUuid)
+  const currentProgramSceneUuid = useSceneStore(state => state.current.currentProgramSceneUuid)
 
   const { data: base64 } = useQuery({
     queryKey: ['base64', sceneUuid],
@@ -76,9 +76,9 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
           )}
         </div>
         <div className='flex items-center space-x-4'>
-          <Button size='icon' intent='ghost'>
+          {/* <Button size='icon' intent='ghost'>
             <Edit2 onClick={() => setIsEdit(true)} className='h-4 w-4' />
-          </Button>
+          </Button> */}
           {sceneUuid === currentProgramSceneUuid ? (
             <Button intent='dark'>Active</Button>
           ) : (
@@ -100,21 +100,8 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
 }
 
 export default function ScenesLayout({ children }: PropsWithChildren) {
-  const { scenes, setCurrent, setScenes } = useSceneStore()
-  const isConnected = useConnectionStore((state) => state.isConnected)
-
-  // useQuery({
-  //   queryKey: ['obs', 'scenes'],
-  //   queryFn: async () => {
-  //     const { scenes, ...current } = await obs.call('GetSceneList')
-  //     setCurrent(current)
-  //     setScenes(scenes as SceneProps[])
-  //   },
-  //   onError: (error) => {
-  //     console.error('Failed to fetch scenes:', error)
-  //   },
-  //   enabled: isConnected
-  // })
+  const isConnected = useConnectionStore(state => state.isConnected)
+  const { scenes } = useSceneStore()
 
   if (!isConnected) return <div>Disconnected</div>
 
@@ -122,8 +109,6 @@ export default function ScenesLayout({ children }: PropsWithChildren) {
     <div className='col-start-2 -col-end-2'>
       <div className='space-y-4 p-4'>
         {scenes.map((scene) => (
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           <Scene key={scene.sceneIndex} {...scene} />
         ))}
       </div>

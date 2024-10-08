@@ -24,19 +24,16 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-import { useConnectionStore } from '~/store/store'
+import { useConnectionStore, useInfoStore, useInputStore } from '~/store/store'
 
 export function ObsWebsocketDashboard() {
   // const { data: systemStats } = useObs('GetStats')
   // const { data: version } = useObs('GetVersion')
   // const { data: inputSources } = useObs('GetInputList')
   // console.log(inputSources , 'inputSources')
-  const { isConnected } = useConnectionStore()
-
-  // const inputSources = useInputStore((state) => state.inputs)
-
-
-  const conn = useConnectionStore()
+  const isConnected = useConnectionStore(state => state.isConnected)
+  const inputSources = useInputStore(state => state.inputs)
+  const version = useInfoStore(state => state.version)
 
   const [stats, setStats] = useState({
     cpuUsage: 0,
@@ -81,8 +78,8 @@ export function ObsWebsocketDashboard() {
             <Server className='text-neutral-500 dark:text-neutral-400' />
           </CardHeader>
           <CardContent>
-            <div className='text-sm'>OBS: {'---'}</div>
-            <div className='text-sm'>WebSocket: {'---'}</div>
+            <div className='text-sm'>OBS: {version.obsVersion}</div>
+            <div className='text-sm'>WebSocket: {version.obsWebSocketVersion}</div>
           </CardContent>
         </Card>
         <Card>
@@ -108,7 +105,7 @@ export function ObsWebsocketDashboard() {
             <Mic className='text-neutral-500 dark:text-neutral-400' />
           </CardHeader>
           <CardContent>
-            {/* <div className='text-2xl font-bold'>{inputSources?.inputs.length}</div> */}
+            <div className='text-2xl font-bold'>{inputSources?.length}</div>
           </CardContent>
         </Card>
         <Card className='col-span-full'>
@@ -190,7 +187,7 @@ export function ObsWebsocketDashboard() {
         </CardHeader>
         <CardContent>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
-            {/* {inputSources?.inputs.map(({ inputUuid, inputKind, inputName }) => (
+            {inputSources.map(({ inputUuid, inputKind, inputName }) => (
               <div
                 key={inputUuid}
                 className='flex items-center space-x-4 rounded-md border border-neutral-200 p-2 dark:border-neutral-800'
@@ -207,7 +204,7 @@ export function ObsWebsocketDashboard() {
                   </div>
                 </div>
               </div>
-            ))} */}
+            ))}
           </div>
         </CardContent>
       </Card>

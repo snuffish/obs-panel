@@ -1,10 +1,7 @@
 'use client'
 
 import { create } from 'zustand'
-import {
-  type OBSEventTypes,
-  OBSWebSocket
-} from 'obs-websocket-js'
+import { type OBSEventTypes, OBSResponseTypes, OBSWebSocket } from 'obs-websocket-js'
 
 export const host = 'ws://localhost:4455'
 
@@ -52,30 +49,33 @@ export const useSceneStore = create<{
   const setCurrent = (current: CurrentScene) => set({ current })
   const setScenes = (scenes: SceneProps[]) => set({ scenes })
 
-  obs.once('Identified', (_) => {
-    obs.call('GetSceneList')
-    .then(({ scenes, ...current }) => {
-      setCurrent(current)
-      setScenes(scenes as SceneProps[])
-    })
-    .catch((err) => console.error('ERR=>>>', err))
+  useConnectionStore.subscribe(({ isConnected }) => {
+    if (!isConnected) return
 
     obs
-    .on('CurrentProgramSceneChanged', ({ sceneName, sceneUuid }) => {
-      setCurrent({
-        currentProgramSceneName: sceneName,
-        currentProgramSceneUuid: sceneUuid,
+      .call('GetSceneList')
+      .then(({ scenes, ...current }) => {
+        setCurrent(current)
+        setScenes(scenes as SceneProps[])
       })
-    })
-    .on('SceneNameChanged', (data) => {
-      const scenes = get().scenes.map((scene) =>
-        scene.sceneUuid === data.sceneUuid
-          ? { ...scene, sceneName: data.sceneName }
-          : scene,
-      )
+      .catch((err) => console.error('ERR=>>>', err))
 
-      setScenes(scenes)
-    })
+    obs
+      .on('CurrentProgramSceneChanged', ({ sceneName, sceneUuid }) => {
+        setCurrent({
+          currentProgramSceneName: sceneName,
+          currentProgramSceneUuid: sceneUuid,
+        })
+      })
+      .on('SceneNameChanged', (data) => {
+        const scenes = get().scenes.map((scene) =>
+          scene.sceneUuid === data.sceneUuid
+            ? { ...scene, sceneName: data.sceneName }
+            : scene,
+        )
+
+        setScenes(scenes)
+      })
   })
 
   return {
@@ -83,5 +83,67 @@ export const useSceneStore = create<{
     scenes: [],
     setCurrent,
     setScenes: (scenes: SceneProps[]) => set({ scenes }),
+  }
+})
+
+type SourceProps = {
+  inputKind: string
+  inputName: string
+  inputUuid: string
+  unversionedInputKind: string
+}
+
+export const useInputStore = create<{
+  inputs: SourceProps[]
+  setInputs: (inputs: SourceProps[]) => void
+}>((set) => {
+  const setInputs = (inputs: SourceProps[]) => set({ inputs })
+
+  useConnectionStore.subscribe(({ isConnected }) => {
+    if (!isConnected) return
+
+    obs
+      .call('GetInputList')
+      .then(async ({ inputs }) => {
+        inputs = await Promise.all(
+          inputs.map(async (input) => {
+            const { inputSettings } = await obs.call('GetInputSettings', {
+              inputUuid: input.inputUuid as string,
+            })
+
+            return { inputSettings, ...input }
+          }),
+        )
+
+        setInputs(inputs as SourceProps[])
+      })
+      .catch((err) => console.error('ERR=>>>', err))
+  })
+
+  return {
+    inputs: [],
+    setInputs,
+  }
+})
+
+export const useInfoStore = create<{
+  version: OBSResponseTypes['GetVersion']
+  setVersion: (version: OBSResponseTypes['GetVersion']) => void
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+}>((set) => {
+  const setVersion = (version: OBSResponseTypes['GetVersion']) => set({ version })
+
+  useConnectionStore.subscribe(({ isConnected }) => {
+    if (!isConnected) return
+
+    obs.call('GetVersion')
+    .then((version) => setVersion(version))
+    .catch((err) => console.error('GetVersion error:', err))
+  })
+
+  return {
+    version: {},
+    setVersion
   }
 })
