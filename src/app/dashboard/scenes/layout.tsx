@@ -40,7 +40,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
     enabled: isConnected,
   })
 
-  const { mutateAsync: changeSceneName } = useMutation({
+  const { mutate: changeSceneName } = useMutation({
     mutationFn: async () => {
       const newSceneName = newSceneNameRef.current?.value ?? ''
 
@@ -55,7 +55,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
     onError: (error) => console.error('Failed to set scene name:', error),
   })
 
-  const { mutateAsync: activateScene } = useMutation({
+  const { mutate: activateScene } = useMutation({
     mutationFn: async () => {
       await obs.call('SetCurrentProgramScene', {
         sceneUuid,
@@ -83,13 +83,13 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
                 ref={newSceneNameRef}
                 className='flex-grow'
                 defaultValue={sceneName}
-                onKeyDown={async (e) => {
-                  if (e.key === 'Enter') await changeSceneName()
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') changeSceneName()
                   if (e.key === 'Escape') setIsEdit(false)
                 }}
               />
               <Button
-                onClick={async () => await changeSceneName()}
+                onClick={() => changeSceneName()}
                 intent='dark'
                 size='icon'
               >
@@ -115,7 +115,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
             <Button intent='dark'>Active</Button>
           ) : (
             <Button
-              onClick={async () => await activateScene()}
+              onClick={() => activateScene()}
               intent='outline'
             >
               Activate

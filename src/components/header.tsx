@@ -18,7 +18,7 @@ import { useMutation } from '@tanstack/react-query'
 const ConnectButton = () => {
   const { isConnected, setIsConnected, setIdentified } = useConnectionStore()
 
-  const { mutateAsync: connect } = useMutation({
+  const { mutate: connect } = useMutation({
     mutationFn: async () => {
       const session = await obs.connect(host)
 
@@ -28,7 +28,7 @@ const ConnectButton = () => {
     onError: (error) => console.error('Failed to connect:', error),
   })
 
-  const { mutateAsync: disconnect } = useMutation({
+  const { mutate: disconnect } = useMutation({
     mutationFn: async () => {
       await obs.disconnect()
 
@@ -41,7 +41,7 @@ const ConnectButton = () => {
   return (
     <Button
       intent={isConnected ? 'destructive' : 'primary'}
-      onClick={async () => (!isConnected ? connect() : disconnect())}
+      onClick={() => (!isConnected ? connect() : disconnect())}
     >
       {isConnected ? <UnplugIcon /> : <PlugIcon />}
       {isConnected ? 'Disconnect' : 'Connect'}
