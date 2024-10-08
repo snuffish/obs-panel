@@ -24,10 +24,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from 'recharts'
-import { useConnectionStore } from '~/store/connection'
-import { useInputStore } from '~/store/input'
-import { useQuery } from '@tanstack/react-query'
-import { obs, useObs } from '~/hooks/obs'
+import { useConnectionStore } from '~/store/store'
 
 export function ObsWebsocketDashboard() {
   // const { data: systemStats } = useObs('GetStats')
@@ -84,8 +81,8 @@ export function ObsWebsocketDashboard() {
             <Server className='text-neutral-500 dark:text-neutral-400' />
           </CardHeader>
           <CardContent>
-            <div className='text-sm'>OBS: {version?.obsVersion}</div>
-            <div className='text-sm'>WebSocket: {version?.obsWebSocketVersion}</div>
+            <div className='text-sm'>OBS: {'---'}</div>
+            <div className='text-sm'>WebSocket: {'---'}</div>
           </CardContent>
         </Card>
         <Card>
@@ -111,7 +108,7 @@ export function ObsWebsocketDashboard() {
             <Mic className='text-neutral-500 dark:text-neutral-400' />
           </CardHeader>
           <CardContent>
-            <div className='text-2xl font-bold'>{inputSources?.inputs.length}</div>
+            {/* <div className='text-2xl font-bold'>{inputSources?.inputs.length}</div> */}
           </CardContent>
         </Card>
         <Card className='col-span-full'>
@@ -148,23 +145,23 @@ export function ObsWebsocketDashboard() {
             <div>
               <div className='mb-1 flex justify-between'>
                 <div>CPU Usage</div>
-                <div>{systemStats?.cpuUsage.toFixed(2)}%</div>
+                <div>{0}%</div>
               </div>
-              <Progress value={systemStats?.cpuUsage} />
+              <Progress value={0} />
             </div>
             <div>
               <div className='mb-1 flex justify-between'>
                 <div>Memory Usage</div>
-                <div>{systemStats?.memoryUsage.toFixed(2)} MB</div>
+                <div>{0} MB</div>
               </div>
               <Progress value={stats.memoryUsage} />
             </div>
             <div>
               <div className='mb-1 flex justify-between'>
                 <div>Free Disk Space</div>
-                <div>{systemStats?.availableDiskSpace.toFixed(2)} GB</div>
+                <div>{0} GB</div>
               </div>
-              <Progress value={((systemStats?.availableDiskSpace ?? 0) / 10) * 100} />
+              <Progress value={(0 / 10) * 100} />
             </div>
           </CardContent>
         </Card>
@@ -193,7 +190,7 @@ export function ObsWebsocketDashboard() {
         </CardHeader>
         <CardContent>
           <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3'>
-            {inputSources?.inputs.map(({ inputUuid, inputKind, inputName }) => (
+            {/* {inputSources?.inputs.map(({ inputUuid, inputKind, inputName }) => (
               <div
                 key={inputUuid}
                 className='flex items-center space-x-4 rounded-md border border-neutral-200 p-2 dark:border-neutral-800'
@@ -210,7 +207,7 @@ export function ObsWebsocketDashboard() {
                   </div>
                 </div>
               </div>
-            ))}
+            ))} */}
           </div>
         </CardContent>
       </Card>

@@ -12,8 +12,7 @@ import {
 import Link from 'next/link'
 import { type PropsWithChildren } from 'react'
 import { Button, type ButtonProps } from './ui/button'
-import { host, obs } from '~/hooks/obs'
-import { useConnectionStore } from '~/store/store'
+import { host, obs, useConnectionStore } from '~/store/store'
 
 const ConnectButton = () => {
   const { isConnected, setIsConected, setIdentified } = useConnectionStore()

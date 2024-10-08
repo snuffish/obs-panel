@@ -2,7 +2,7 @@
 
 import { useQueryClient } from '@tanstack/react-query'
 import {
-    OBSEventTypes,
+    type OBSEventTypes,
     OBSWebSocket
 } from 'obs-websocket-js'
 import { useEffect } from 'react'
@@ -49,18 +49,8 @@ import { useConnectionStore } from '~/store/store'
 //     })
 // }
 
-export const host = 'ws://localhost:4455'
-
 type EventNames = keyof OBSEventTypes
 type EventHandler<T extends EventNames> = OBSEventTypes[T]
-
-export const obs = new OBSWebSocket()
-
-const originalEmit = obs.emit.bind(obs)
-obs.emit = (event, ...args) => {
-  console.log(`Event emitted: ${event}`, ...args)
-  return originalEmit.apply(this, [event, ...args])
-}
 
 export const useObs = <T extends EventNames>(
   event: T,
