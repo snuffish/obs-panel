@@ -9,7 +9,12 @@ import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
 import { Card, CardContent } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
-import { obs, type SceneProps, useConnectionStore, useSceneStore } from '~/store/store'
+import {
+  obs,
+  type SceneProps,
+  useConnectionStore,
+  useSceneStore,
+} from '~/store/store'
 
 const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
   const isConnected = useConnectionStore((state) => state.isConnected)
@@ -41,12 +46,22 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
 
       obs
         .call('SetSceneName', {
-          sceneUuid, newSceneName
+          sceneUuid,
+          newSceneName,
         })
         .catch((error) => console.error('Failed to set scene name:', error))
     },
     onSuccess: () => setIsEdit(false),
     onError: (error) => console.error('Failed to set scene name:', error),
+  })
+
+  const { mutateAsync: activateScene } = useMutation({
+    mutationFn: async () => {
+      await obs.call('SetCurrentProgramScene', {
+        sceneUuid,
+      })
+    },
+    onError: (error) => console.error('Failed to activate scene:', error),
   })
 
   return (
@@ -73,7 +88,11 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
                   if (e.key === 'Escape') setIsEdit(false)
                 }}
               />
-              <Button onClick={async () => await changeSceneName()} intent='dark' size='icon'>
+              <Button
+                onClick={async () => await changeSceneName()}
+                intent='dark'
+                size='icon'
+              >
                 <Check className='h-4 w-4' />
               </Button>
               <Button
@@ -96,11 +115,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
             <Button intent='dark'>Active</Button>
           ) : (
             <Button
-              onClick={() =>
-                obs.call('SetCurrentProgramScene', {
-                  sceneUuid,
-                })
-              }
+              onClick={async () => await activateScene()}
               intent='outline'
             >
               Activate
@@ -135,6 +150,4 @@ export default function ScenesLayout({ children }: PropsWithChildren) {
       {children}
     </div>
   )
-
-  return <>TEST</>
 }
