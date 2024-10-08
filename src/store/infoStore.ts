@@ -1,4 +1,4 @@
-import { OBSResponseTypes } from "obs-websocket-js"
+import { type OBSResponseTypes } from "obs-websocket-js"
 import { create } from "zustand"
 import { useConnectionStore } from "./connectionStore"
 import { obs } from "~/services/obs"
