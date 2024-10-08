@@ -23,8 +23,8 @@ import {
   Clock,
   Film,
 } from 'lucide-react'
-import { useConnectionStore } from '~/store/store'
 import Disconnected from './Disconnected'
+import { useConnectionStore } from '~/store/connectionStore'
 
 export function ObsRecordingDashboard() {
   const isConnected = useConnectionStore((state) => state.isConnected)
@@ -81,7 +81,7 @@ export function ObsRecordingDashboard() {
     setRecordingTime(0)
     setFileSize(0)
   }
-  
+
   if (!isConnected) return <Disconnected />
 
   return (

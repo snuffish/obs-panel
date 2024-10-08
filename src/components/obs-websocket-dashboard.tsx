@@ -1,31 +1,31 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
-import { Badge } from '~/components/ui/badge'
-import { Progress } from '~/components/ui/progress'
+import { useQuery } from '@tanstack/react-query'
 import {
-  Wifi,
-  Server,
-  Video,
-  Mic,
-  BarChart,
   Camera,
-  Volume2,
   Globe,
+  Mic,
+  Server,
   Users,
+  Video,
+  Volume2,
+  Wifi
 } from 'lucide-react'
 import {
-  LineChart,
+  CartesianGrid,
   Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
 } from 'recharts'
-import { obs, useConnectionStore, useInfoStore, useInputStore } from '~/store/store'
-import { useQuery } from '@tanstack/react-query'
+import { Badge } from '~/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { obs } from '~/services/obs'
+import { useConnectionStore } from '~/store/connectionStore'
+import { useInfoStore } from '~/store/infoStore'
+import { useInputStore } from '~/store/sourceStore'
 
 const ServerInfo = () => {
   const isConnected = useConnectionStore((state) => state.isConnected)

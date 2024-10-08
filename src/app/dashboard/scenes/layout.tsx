@@ -1,21 +1,16 @@
 'use client'
 
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { Check, Edit2, Terminal, X } from 'lucide-react'
+import { Check, Edit2, X } from 'lucide-react'
 import Image from 'next/image'
-import React from 'react'
 import { useRef, useState, type PropsWithChildren } from 'react'
 import Disconnected from '~/components/Disconnected'
-import { Alert, AlertDescription, AlertTitle } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
 import { Card, CardContent } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
-import {
-  obs,
-  type SceneProps,
-  useConnectionStore,
-  useSceneStore,
-} from '~/store/store'
+import { obs } from '~/services/obs'
+import { useConnectionStore } from '~/store/connectionStore'
+import { useSceneStore, type SceneProps } from '~/store/sceneStore'
 
 const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
   const [isEdit, setIsEdit] = useState(false)

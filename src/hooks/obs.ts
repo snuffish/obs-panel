@@ -6,7 +6,7 @@ import {
     OBSWebSocket
 } from 'obs-websocket-js'
 import { useEffect } from 'react'
-import { useConnectionStore } from '~/store/store'
+import { useConnectionStore } from '~/store/connectionStore'
 
 // const host = 'ws://localhost:4455'
 

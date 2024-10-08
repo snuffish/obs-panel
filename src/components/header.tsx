@@ -12,9 +12,10 @@ import {
 import Link from 'next/link'
 import { type PropsWithChildren } from 'react'
 import { Button, type ButtonProps } from './ui/button'
-import { obs, useConnectionStore } from '~/store/store'
 import { useMutation } from '@tanstack/react-query'
 import { useServerSettings } from '~/hooks/useServerSettings'
+import { obs } from '~/services/obs'
+import { useConnectionStore } from '~/store/connectionStore'
 
 const ConnectButton = () => {
   const { isConnected, setIsConnected, setIdentified } = useConnectionStore()
