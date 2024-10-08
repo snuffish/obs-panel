@@ -19,14 +19,22 @@ obs.emit = (event, ...args) => {
 
 type ConnectionState = {
   isConnected: boolean
-  setIsConected: (isConnected: boolean) => void
+  setIsConnected: (isConnected: boolean) => void
   setIdentified: (identified: unknown) => void
 }
 
 export const useConnectionStore = create<ConnectionState>((set) => ({
   isConnected: false,
   identified: {},
-  setIsConected: (isConnected: boolean) => set({ isConnected }),
+  setIsConnected: (isConnected: boolean) => {
+    set({ isConnected })
+
+    if (!isConnected) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      set({ identified: {} })
+    }
+  },
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   setIdentified: (identified: unknown) => set({ identified }),

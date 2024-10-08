@@ -13,38 +13,34 @@ import Link from 'next/link'
 import { type PropsWithChildren } from 'react'
 import { Button, type ButtonProps } from './ui/button'
 import { host, obs, useConnectionStore } from '~/store/store'
+import { useMutation } from '@tanstack/react-query'
 
 const ConnectButton = () => {
-  const { isConnected, setIsConected, setIdentified } = useConnectionStore()
+  const { isConnected, setIsConnected, setIdentified } = useConnectionStore()
 
-  const connect = () => {
-    obs
-      .connect(host)
-      .then((session) => {
-        setIsConected(true)
-        setIdentified(session)
-      })
-      .catch((error) => {
-        throw error
-      })
-  }
+  const { mutateAsync: connect } = useMutation({
+    mutationFn: async () => {
+      const session = await obs.connect(host)
 
-  const disconnect = () => {
-    obs
-      .disconnect()
-      .then(() => {
-        setIsConected(false)
-        setIdentified({})
-      })
-      .catch((error) => {
-        throw error
-      })
-  }
+      setIsConnected(true)
+      setIdentified(session)
+    },
+    onError: (error) => console.error('Failed to connect:', error),
+  })
+
+  const { mutateAsync: disconnect } = useMutation({
+    mutationFn: async () => {
+      await obs.disconnect()
+
+      setIsConnected(false)
+    },
+    onError: (error) => console.error('Failed to disconnect:', error),
+  })
 
   return (
     <Button
       intent={isConnected ? 'destructive' : 'primary'}
-      onClick={!isConnected ? connect : disconnect}
+      onClick={async () => (!isConnected ? connect() : disconnect())}
     >
       {isConnected ? <UnplugIcon /> : <PlugIcon />}
       {isConnected ? 'Disconnect' : 'Connect'}
