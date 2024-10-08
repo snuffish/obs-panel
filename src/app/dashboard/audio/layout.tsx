@@ -1,19 +1,27 @@
 'use client'
 
-import React from 'react'
+import React, { useRef } from 'react'
 import { type PropsWithChildren } from 'react'
+import { useLocalStorage } from '~/hooks/useLocalStorage'
 
 export default function AudioLayout({ children }: PropsWithChildren) {
-  // const queryClient = useObs('CurrentProgramSceneChanged', (data) => {
-  //   console.log('CurrentProgramSceneChanged1111 ', data)
-  // })
-  // const { setIsConected, setIdentified } = useConnectionStore()
+  const value = useRef<HTMLInputElement>(null)
 
-  // console.log('store ', store)
+  const { setItem, item } = useLocalStorage('testValue')
+
+  const setValue = () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    setItem(value.current?.value)
+  }
 
   return (
-    <div className='col-start-2 -col-end-2'>
-      AUDIO
+    <div className='col-start-2 -col-end-2 bg-white'>
+      <div>
+        <input ref={value} type='text' />
+        <button onClick={setValue}>TEST</button>
+      </div>
+      <div>VALUE: {item}</div>
     </div>
   )
 }

@@ -56,7 +56,7 @@ export const useObs = <T extends EventNames>(
   event: T,
   handler: EventHandler<T>,
 ) => {
-  const { setIsConected, setIdentified } = useConnectionStore()
+  const { setIsConnected, setIdentified } = useConnectionStore()
   const queryClient = useQueryClient()
 
   //   const connectMutation = useMutation(async () => {
