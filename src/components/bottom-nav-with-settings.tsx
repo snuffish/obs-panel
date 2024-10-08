@@ -14,9 +14,11 @@ import {
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import { Switch } from '~/components/ui/switch'
+import { useLocalStorage } from '~/hooks/useLocalStorage'
 
 export function BottomNavWithSettingsComponent() {
   const [isOpen, setIsOpen] = useState(false)
+  const [host, setHost] = useLocalStorage('host', 'localhost:4455')
 
   return (
     <div className='fixed bottom-0 left-0 right-0 border-t border-neutral-200 bg-white p-2 dark:border-neutral-800 dark:bg-neutral-950'>
@@ -70,7 +72,7 @@ export function BottomNavWithSettingsComponent() {
                 </Label>
                 <Input
                   id='server'
-                  defaultValue='obs-websocket.local'
+                  defaultValue={host}
                   className='col-span-3'
                 />
               </div>

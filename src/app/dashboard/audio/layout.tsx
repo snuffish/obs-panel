@@ -7,7 +7,7 @@ import { useLocalStorage } from '~/hooks/useLocalStorage'
 export default function AudioLayout({ children }: PropsWithChildren) {
   const value = useRef<HTMLInputElement>(null)
 
-  const { setItem, item } = useLocalStorage('testValue')
+  const [item, setItem] = useLocalStorage('testValue')
 
   const setValue = () => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment

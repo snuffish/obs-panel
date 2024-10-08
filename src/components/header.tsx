@@ -12,15 +12,17 @@ import {
 import Link from 'next/link'
 import { type PropsWithChildren } from 'react'
 import { Button, type ButtonProps } from './ui/button'
-import { host, obs, useConnectionStore } from '~/store/store'
+import { obs, useConnectionStore } from '~/store/store'
 import { useMutation } from '@tanstack/react-query'
+import { useLocalStorage } from '~/hooks/useLocalStorage'
 
 const ConnectButton = () => {
+  const [host] = useLocalStorage('host', 'localhost:4455')
   const { isConnected, setIsConnected, setIdentified } = useConnectionStore()
 
   const { mutate: connect } = useMutation({
     mutationFn: async () => {
-      const session = await obs.connect(host)
+      const session = await obs.connect(`ws://${host}`)
 
       setIsConnected(true)
       setIdentified(session)
