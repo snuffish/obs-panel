@@ -137,7 +137,7 @@ export default function ScenesDashboard() {
       setCurrent(current)
       setScenes(scenes as SceneProps[])
 
-      return scenes
+      return scenes as SceneProps[]
     },
     enabled: isConnected,
   })
@@ -145,7 +145,6 @@ export default function ScenesDashboard() {
   if (!isConnected) return <Disconnected />
 
   return scenes ? (
-    // @ts-ignore
     scenes.map((scene) => <Scene key={scene.sceneUuid} {...scene} />)
   ) : (
     <div>ERROR</div>
