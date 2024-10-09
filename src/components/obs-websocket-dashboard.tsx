@@ -36,7 +36,7 @@ const ServerInfo = () => {
     queryFn: async () => {
       return await obs.call('GetVersion')
     },
-    enabled: isConnected
+    enabled: isConnected,
   })
 
   if (!isConnected) return null
@@ -57,22 +57,38 @@ const ServerInfo = () => {
 
 const RecordStatus = () => {
   const isConnected = useConnectionStore((state) => state.isConnected)
-  const active = useRecordStore((state) => state.active)
+  const recordActive = useRecordStore((state) => state.active)
+  const streamActive = false
 
   if (!isConnected) return null
 
   return (
     <Card>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <CardTitle className='text-sm font-medium'>Recording Status</CardTitle>
-        <Video className={active ? 'text-red-500' : 'text-black'} />
+        <CardTitle className='text-sm font-medium'>Video Status</CardTitle>
+        <Video
+          className={
+            recordActive || streamActive ? 'text-red-500' : 'text-black'
+          }
+        />
       </CardHeader>
-      <CardContent>
-        {active ? (
-          <Badge variant='destructive'>Running</Badge>
-        ) : (
-          <Badge variant='outline'>Stopped</Badge>
-        )}
+      <CardContent className='space-y-1'>
+        <div className='flex'>
+          <span className='flex-1 text-sm'>Recording</span>
+          {recordActive ? (
+            <Badge variant='destructive'>Running</Badge>
+          ) : (
+            <Badge variant='outline'>Stopped</Badge>
+          )}
+        </div>
+        <div className='flex'>
+          <span className='flex-1 text-sm'>Streaming</span>
+          {streamActive ? (
+            <Badge variant='destructive'>Running</Badge>
+          ) : (
+            <Badge variant='outline'>Stopped</Badge>
+          )}
+        </div>
       </CardContent>
     </Card>
   )
@@ -142,7 +158,7 @@ const StreamingServices = () => {
       { name: 'Twitch', viewers: 0 },
       { name: 'YouTube', viewers: 0 },
       { name: 'Facebook', viewers: 0 },
-    ]
+    ],
   }
 
   if (!isConnected) return null
@@ -235,12 +251,14 @@ export function ObsWebsocketDashboard() {
           })
 
           return { inputSettings, ...input }
-        })
+        }),
       )
 
       setInputs(parsedInputs as unknown as SourceProps[])
+
+      return parsedInputs
     },
-    enabled: isConnected
+    enabled: isConnected,
   })
 
   return (
