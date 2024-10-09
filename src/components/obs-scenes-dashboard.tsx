@@ -3,7 +3,7 @@ import { Check, X, Edit2 } from 'lucide-react'
 import { useState, useRef } from 'react'
 import { obs } from '~/services/obs'
 import { useConnectionStore } from '~/store/connectionStore'
-import { SceneProps, useSceneStore } from '~/store/sceneStore'
+import { type SceneProps, useSceneStore } from '~/store/sceneStore'
 import Disconnected from './Disconnected'
 import { Button } from './ui/button'
 import { Card, CardContent } from './ui/card'
@@ -23,16 +23,16 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
   const { data: base64 } = useQuery({
     queryKey: ['base64', sceneUuid],
     queryFn: async () => {
-      const res = await obs.call('GetSourceScreenshot', {
+      const data = await obs.call('GetSourceScreenshot', {
         sourceUuid: sceneUuid,
         imageFormat: 'jpg',
         imageHeight: 150,
         imageWidth: 150,
       })
 
-      return res.imageData
+      return data.imageData
     },
-    refetchInterval: 5000,
+    refetchInterval: 1000,
     enabled: isConnected,
   })
 
