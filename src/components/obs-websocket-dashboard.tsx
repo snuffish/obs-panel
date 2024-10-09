@@ -31,7 +31,13 @@ import SystemResources from './SystemResources'
 
 const ServerInfo = () => {
   const isConnected = useConnectionStore((state) => state.isConnected)
-  const version = useInfoStore((state) => state.version)
+  const { data: version } = useQuery({
+    queryKey: ['obs', 'version'],
+    queryFn: async () => {
+      return await obs.call('GetVersion')
+    },
+    enabled: isConnected
+  })
 
   if (!isConnected) return null
 
@@ -42,8 +48,8 @@ const ServerInfo = () => {
         <Server className='text-neutral-500 dark:text-neutral-400' />
       </CardHeader>
       <CardContent>
-        <div className='text-sm'>OBS: {version.obsVersion}</div>
-        <div className='text-sm'>WebSocket: {version.obsWebSocketVersion}</div>
+        <div className='text-sm'>OBS: {version?.obsVersion}</div>
+        <div className='text-sm'>WebSocket: {version?.obsWebSocketVersion}</div>
       </CardContent>
     </Card>
   )
@@ -132,13 +138,11 @@ const StreamingServices = () => {
   const isConnected = useConnectionStore((state) => state.isConnected)
 
   const streamInfo = {
-    bitrate: Math.floor(Math.random() * 5000) + 2000,
     services: [
-      { name: 'Twitch', viewers: 204 },
-      { name: 'YouTube', viewers: 201 },
-      { name: 'Facebook', viewers: 446 },
-    ],
-    totalViewers: 0,
+      { name: 'Twitch', viewers: 0 },
+      { name: 'YouTube', viewers: 0 },
+      { name: 'Facebook', viewers: 0 },
+    ]
   }
 
   if (!isConnected) return null
