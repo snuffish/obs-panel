@@ -5,18 +5,15 @@ import { useConnectionStore } from "./connectionStore"
 
 export const useRecordStore = create<{
     active: boolean
-    setStatus: (version: OBSResponseTypes['GetRecordStatus']) => void
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
   }>((set) => {  
     useConnectionStore.subscribe(({ isConnected }) => {
       if (!isConnected) return
 
       obs.call('GetRecordStatus').then(({ outputActive }) => {
         set({ active: outputActive })
-      })
+      }).catch((err) => console.error('GetRecordStatus error:', err))
 
-      obs.on('RecordStateChanged', ({ outputActive, outputPath, outputState }) => {
+      obs.on('RecordStateChanged', ({ outputActive }) => {
         set({ active: outputActive })
       })
     })

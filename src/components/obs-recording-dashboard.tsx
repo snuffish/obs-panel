@@ -1,33 +1,16 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
-import { Button } from '~/components/ui/button'
-import { Progress } from '~/components/ui/progress'
-import { Badge } from '~/components/ui/badge'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '~/components/ui/select'
-import { Switch } from '~/components/ui/switch'
-import { Label } from '~/components/ui/label'
-import {
-  Circle,
-  Pause,
-  Square,
-  Folder,
-  HardDrive,
-  Clock,
-  Film,
-} from 'lucide-react'
-import Disconnected from './Disconnected'
-import { useConnectionStore } from '~/store/connectionStore'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  Circle
+} from 'lucide-react'
+import { Badge } from '~/components/ui/badge'
+import { Button } from '~/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { obs } from '~/services/obs'
+import { useConnectionStore } from '~/store/connectionStore'
 import { useRecordStore } from '~/store/recordStore'
+import Disconnected from './Disconnected'
 
 export function ObsRecordingDashboard() {
   const queryClient = useQueryClient()

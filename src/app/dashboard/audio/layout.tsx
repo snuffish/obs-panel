@@ -22,6 +22,7 @@ export default function AudioLayout({ children }: PropsWithChildren) {
         <button onClick={setValue}>TEST</button>
       </div>
       <div>VALUE: {item}</div>
+      {children}
     </div>
   )
 }

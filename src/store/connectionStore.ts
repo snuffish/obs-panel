@@ -5,6 +5,7 @@ type Identified = Awaited<ReturnType<typeof obs.connect>>
 
 type ConnectionState = {
   isConnected: boolean
+  identified: Identified | undefined
   setIsConnected: (isConnected: boolean) => void
   setIdentified: (identified: Identified | undefined) => void
 }

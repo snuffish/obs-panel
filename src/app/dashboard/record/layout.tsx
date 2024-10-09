@@ -1,8 +1,6 @@
 'use client'
 
-import React from 'react'
 import { type PropsWithChildren } from 'react'
-import { isDataView } from 'util/types'
 import { ObsRecordingDashboard } from '~/components/obs-recording-dashboard'
 
 // GetRecordStatus

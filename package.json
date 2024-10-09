@@ -8,7 +8,9 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "format-all": "npx prettier --write ."
+    "format-all": "npx prettier --write .",
+    "docker:build": "docker build -t obs-panel .",
+    "docker:start": "docker run -p 3000:3000 obs-panel"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
