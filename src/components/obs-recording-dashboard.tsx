@@ -11,6 +11,7 @@ import { obs } from '~/services/obs'
 import { useConnectionStore } from '~/store/connectionStore'
 import { useRecordStore } from '~/store/recordStore'
 import Disconnected from './Disconnected'
+import SystemResources from './SystemResources'
 
 export function ObsRecordingDashboard() {
   const queryClient = useQueryClient()
@@ -77,6 +78,7 @@ export function ObsRecordingDashboard() {
           </div>
         </CardContent>
       </Card>
+      {active && <SystemResources />}
     </div>
   )
 }

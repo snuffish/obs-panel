@@ -2,7 +2,7 @@ import { create } from "zustand"
 import { useConnectionStore } from "./connectionStore"
 import { obs } from "~/services/obs"
 
-type SourceProps = {
+export type SourceProps = {
     inputKind: string
     inputName: string
     inputUuid: string

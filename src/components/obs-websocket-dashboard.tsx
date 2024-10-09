@@ -26,7 +26,8 @@ import { obs } from '~/services/obs'
 import { useConnectionStore } from '~/store/connectionStore'
 import { useInfoStore } from '~/store/infoStore'
 import { useRecordStore } from '~/store/recordStore'
-import { useInputStore } from '~/store/sourceStore'
+import { SourceProps, useInputStore } from '~/store/sourceStore'
+import SystemResources from './SystemResources'
 
 const ServerInfo = () => {
   const isConnected = useConnectionStore((state) => state.isConnected)
@@ -197,61 +198,6 @@ const CPUUsageHistory = () => {
   )
 }
 
-const SystemResources = () => {
-  const isConnected = useConnectionStore((state) => state.isConnected)
-
-  const { data: stats } = useQuery({
-    queryFn: async () => {
-      return await obs.call('GetStats')
-    },
-    refetchInterval: 5000,
-    enabled: isConnected,
-  })
-
-  if (!isConnected) return null
-
-  let cpuUsage = stats?.cpuUsage
-  if (cpuUsage) cpuUsage = parseFloat(cpuUsage.toFixed(2))
-
-  let memoryUsage = stats?.memoryUsage
-  if (memoryUsage) memoryUsage = parseFloat(memoryUsage.toFixed(2))
-
-  let availableDiskSpace = stats?.availableDiskSpace
-  if (availableDiskSpace)
-    availableDiskSpace = parseFloat(availableDiskSpace.toFixed(2))
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>System Resources</CardTitle>
-      </CardHeader>
-      <CardContent className='space-y-4'>
-        <div>
-          <div className='mb-1 flex justify-between'>
-            <div>CPU Usage</div>
-            <div>{cpuUsage}%</div>
-          </div>
-          {/* <Progress value={stats?.cpuUsage} /> */}
-        </div>
-        <div>
-          <div className='mb-1 flex justify-between'>
-            <div>Memory Usage</div>
-            <div>{memoryUsage} MB</div>
-          </div>
-          {/* <Progress value={stats?.memoryUsage}  /> */}
-        </div>
-        <div>
-          <div className='mb-1 flex justify-between'>
-            <div>Free Disk Space</div>
-            <div>{availableDiskSpace} MB</div>
-          </div>
-          {/* <Progress value={50} max={100} /> */}
-        </div>
-      </CardContent>
-    </Card>
-  )
-}
-
 const ConnectionStatus = () => {
   const isConnected = useConnectionStore((state) => state.isConnected)
 
@@ -271,6 +217,28 @@ const ConnectionStatus = () => {
 }
 
 export function ObsWebsocketDashboard() {
+  const isConnected = useConnectionStore((state) => state.isConnected)
+  const setInputs = useInputStore((state) => state.setInputs)
+
+  useQuery({
+    queryKey: ['obs', 'inputs'],
+    queryFn: async () => {
+      const { inputs } = await obs.call('GetInputList')
+      const parsedInputs = await Promise.all(
+        inputs.map(async (input) => {
+          const { inputSettings } = await obs.call('GetInputSettings', {
+            inputUuid: input.inputUuid as string,
+          })
+
+          return { inputSettings, ...input }
+        })
+      )
+
+      setInputs(parsedInputs as unknown as SourceProps[])
+    },
+    enabled: isConnected
+  })
+
   return (
     <div className='space-y-4 p-4'>
       <h1 className='text-2xl font-bold text-white'>

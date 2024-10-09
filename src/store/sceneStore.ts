@@ -27,14 +27,6 @@ export type CurrentScene = {
       if (!isConnected) return
   
       obs
-        .call('GetSceneList')
-        .then(({ scenes, ...current }) => {
-          setCurrent(current)
-          setScenes(scenes as SceneProps[])
-        })
-        .catch((err) => console.error('ERR=>>>', err))
-  
-      obs
         .on('CurrentProgramSceneChanged', ({ sceneName, sceneUuid }) => {
           setCurrent({
             currentProgramSceneName: sceneName,

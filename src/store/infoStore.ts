@@ -15,10 +15,7 @@ export const useInfoStore = create<{
     useConnectionStore.subscribe(({ isConnected }) => {
       if (!isConnected) return
   
-      obs
-        .call('GetVersion')
-        .then((version) => setVersion(version))
-        .catch((err) => console.error('GetVersion error:', err))
+      
     })
   
     return {
