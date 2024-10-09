@@ -28,6 +28,7 @@ import { useInfoStore } from '~/store/infoStore'
 import { useRecordStore } from '~/store/recordStore'
 import { SourceProps, useInputStore } from '~/store/sourceStore'
 import SystemResources from './SystemResources'
+import { useStreamStore } from '~/store/streamStore'
 
 const ServerInfo = () => {
   const isConnected = useConnectionStore((state) => state.isConnected)
@@ -58,7 +59,7 @@ const ServerInfo = () => {
 const RecordStatus = () => {
   const isConnected = useConnectionStore((state) => state.isConnected)
   const recordActive = useRecordStore((state) => state.active)
-  const streamActive = false
+  const streamActive = useStreamStore((state) => state.active)
 
   if (!isConnected) return null
 
@@ -263,9 +264,6 @@ export function ObsWebsocketDashboard() {
 
   return (
     <div className='space-y-4 p-4'>
-      <h1 className='text-2xl font-bold text-white'>
-        OBS WebSocket Connection Dashboard
-      </h1>
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
         <ConnectionStatus />
         <ServerInfo />

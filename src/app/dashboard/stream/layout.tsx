@@ -1,19 +1,20 @@
 'use client'
 
-import React from 'react'
 import { type PropsWithChildren } from 'react'
+import { ObsStreamingDashboard } from '~/components/obs-streaming-dashboard'
 
-// GetStreamStatus
-// ToggleStream
-// StartStream
-// StopStream
-// StreamStateChanged
-export default function StreamLayout({ children }: PropsWithChildren) {
+// GetRecordStatus
+// ToggleRecord
+// StartRecord
+// StopRecord
+// ToggleRecordPause
+// PauseRecord
+// ResumeRecord
+// RecordStateChanged
+export default function RecordLayout({ children }: PropsWithChildren) {
   return (
     <div className='col-start-2 -col-end-2'>
-      <div className='bg-white flex flex-col flex-wrap'>
-      
-      </div>
+      <ObsStreamingDashboard />
       {children}
     </div>
   )
