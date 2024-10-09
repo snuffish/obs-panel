@@ -10,9 +10,7 @@ export default function AudioLayout({ children }: PropsWithChildren) {
   const [item, setItem] = useLocalStorage('testValue')
 
   const setValue = () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    setItem(value.current?.value)
+    setItem(value.current?.value ? value.current?.value : '')
   }
 
   return (
