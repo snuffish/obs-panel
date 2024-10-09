@@ -33,6 +33,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
 
       return res.imageData
     },
+    refetchInterval: 5000,
     enabled: isConnected,
   })
 

@@ -9,7 +9,7 @@ import {
   Users,
   Video,
   Volume2,
-  Wifi
+  Wifi,
 } from 'lucide-react'
 import {
   CartesianGrid,
@@ -25,6 +25,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { obs } from '~/services/obs'
 import { useConnectionStore } from '~/store/connectionStore'
 import { useInfoStore } from '~/store/infoStore'
+import { useRecordStore } from '~/store/recordStore'
 import { useInputStore } from '~/store/sourceStore'
 
 const ServerInfo = () => {
@@ -47,18 +48,24 @@ const ServerInfo = () => {
   )
 }
 
-const StreamStatus = () => {
+const RecordStatus = () => {
   const isConnected = useConnectionStore((state) => state.isConnected)
+  const active = useRecordStore((state) => state.active)
+
   if (!isConnected) return null
 
   return (
     <Card>
       <CardHeader className='flex flex-row items-center justify-between space-y-0 pb-2'>
-        <CardTitle className='text-sm font-medium'>Stream Status</CardTitle>
-        <Video className='text-red-500' />
+        <CardTitle className='text-sm font-medium'>Recording Status</CardTitle>
+        <Video className={active ? 'text-red-500' : 'text-black'} />
       </CardHeader>
       <CardContent>
-        <Badge variant='destructive'>Live</Badge>
+        {active ? (
+          <Badge variant='destructive'>Running</Badge>
+        ) : (
+          <Badge variant='outline'>Stopped</Badge>
+        )}
       </CardContent>
     </Card>
   )
@@ -198,10 +205,20 @@ const SystemResources = () => {
       return await obs.call('GetStats')
     },
     refetchInterval: 5000,
-    enabled: isConnected
+    enabled: isConnected,
   })
 
   if (!isConnected) return null
+
+  let cpuUsage = stats?.cpuUsage
+  if (cpuUsage) cpuUsage = parseFloat(cpuUsage.toFixed(2))
+
+  let memoryUsage = stats?.memoryUsage
+  if (memoryUsage) memoryUsage = parseFloat(memoryUsage.toFixed(2))
+
+  let availableDiskSpace = stats?.availableDiskSpace
+  if (availableDiskSpace)
+    availableDiskSpace = parseFloat(availableDiskSpace.toFixed(2))
 
   return (
     <Card>
@@ -212,21 +229,21 @@ const SystemResources = () => {
         <div>
           <div className='mb-1 flex justify-between'>
             <div>CPU Usage</div>
-            <div>{stats?.cpuUsage.toFixed(2)}%</div>
+            <div>{cpuUsage}%</div>
           </div>
           {/* <Progress value={stats?.cpuUsage} /> */}
         </div>
         <div>
           <div className='mb-1 flex justify-between'>
             <div>Memory Usage</div>
-            <div>{stats?.memoryUsage.toFixed(2)} MB</div>
+            <div>{memoryUsage} MB</div>
           </div>
           {/* <Progress value={stats?.memoryUsage}  /> */}
         </div>
         <div>
           <div className='mb-1 flex justify-between'>
             <div>Free Disk Space</div>
-            <div>{stats?.availableDiskSpace.toFixed(2)} MB</div>
+            <div>{availableDiskSpace} MB</div>
           </div>
           {/* <Progress value={50} max={100} /> */}
         </div>
@@ -262,7 +279,7 @@ export function ObsWebsocketDashboard() {
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4'>
         <ConnectionStatus />
         <ServerInfo />
-        <StreamStatus />
+        <RecordStatus />
         <ActiveSources />
         <StreamingServices />
       </div>

@@ -88,7 +88,7 @@ export const useObs = <T extends EventNames>(
     //   // @ts-ignore
     //   obs.off(event, handler)
     // }
-  }, [event, handler, setIdentified, setIsConected])
+  }, [event, handler, setIdentified, setIsConnected])
 
   return {
     queryClient,

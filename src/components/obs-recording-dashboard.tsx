@@ -25,28 +25,44 @@ import {
 } from 'lucide-react'
 import Disconnected from './Disconnected'
 import { useConnectionStore } from '~/store/connectionStore'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { obs } from '~/services/obs'
 import { useRecordStore } from '~/store/recordStore'
 
 export function ObsRecordingDashboard() {
+  const queryClient = useQueryClient()
   const isConnected = useConnectionStore((state) => state.isConnected)
+  const active = useRecordStore((state) => state.active)
 
   const { data: status } = useQuery({
+    queryKey: ['obs', 'recordStatus'],
     queryFn: async () => {
       const status = await obs.call('GetRecordStatus')
       return status
     },
-    enabled: isConnected,
+    refetchInterval: 1000,
+    enabled: active,
   })
 
   const { mutate: startRecord } = useMutation({
     mutationFn: async () => {
       await obs.call('StartRecord')
-    }
+
+      await queryClient.invalidateQueries(['obs', 'recordStatus'])
+    },
+  })
+
+  const { mutate: stopRecord } = useMutation({
+    mutationFn: async () => {
+      await obs.call('StopRecord')
+
+      await queryClient.invalidateQueries(['obs', 'recordStatus'])
+    },
   })
 
   if (!isConnected) return <Disconnected />
+
+  const recordTime = active ? status?.outputTimecode : '0:00:00'
 
   return (
     <div className='space-y-4 p-4'>
@@ -58,13 +74,23 @@ export function ObsRecordingDashboard() {
         </CardHeader>
         <CardContent className='flex items-center justify-between'>
           <div className='flex items-center space-x-2'>
-            <Badge variant='outline'>Stopped</Badge>
-            <span className='text-2xl font-bold'>{'0:00:00'}</span>
+            {active ? (
+              <Badge variant='destructive'>Recording</Badge>
+            ) : (
+              <Badge variant='outline'>Stopped</Badge>
+            )}
+            <span className='text-2xl font-bold'>{recordTime}</span>
           </div>
           <div className='space-x-2'>
-            <Button onClick={() => startRecord()} intent='dark'>
-              <Circle className='mr-2 h-4 w-4 fill-current' /> Start Recording
-            </Button>
+            {active ? (
+              <Button onClick={() => stopRecord()} intent='destructive'>
+                <Circle className='mr-2 h-4 w-4 fill-current' /> Stop Recording
+              </Button>
+            ) : (
+              <Button onClick={() => startRecord()} intent='dark'>
+                <Circle className='mr-2 h-4 w-4 fill-current' /> Start Recording
+              </Button>
+            )}
           </div>
         </CardContent>
       </Card>
