@@ -66,9 +66,9 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
   })
 
   return (
-    <Card className=''>
-      <CardContent className='flex justify-between space-x-4 p-4'>
-        <div className='flex items-center space-x-5'>
+    <Card className={sceneUuid === currentProgramSceneUuid ? 'bg-white/50' : ''} onClick={() => activateScene()}>
+      <CardContent className='md:flex justify-between p-4'>
+        <div className='flex items-center space-x-5 flex-col md:flex-row'>
           {base64 && (
             <Image
               className='rounded-xl'
@@ -108,7 +108,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
             <span className='font-medium'>{sceneName}</span>
           )}
         </div>
-        <div className='flex items-center space-x-4'>
+        <div className='hidden md:flex md:items-center md:space-x-4'>
           <Button size='icon' intent='ghost'>
             <Edit2 onClick={() => setIsEdit(true)} className='h-4 w-4' />
           </Button>
