@@ -1,6 +1,6 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
+import { useQueries, useQuery } from '@tanstack/react-query'
 import {
   Camera,
   Globe,
@@ -20,7 +20,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
-import { Badge } from '~/components/ui/badge'
+import { Badge } from  '~/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { obs } from '~/services/obs'
 import { useConnectionStore } from '~/store/connectionStore'
@@ -240,6 +240,29 @@ const ConnectionStatus = () => {
 export function ObsWebsocketDashboard() {
   const isConnected = useConnectionStore((state) => state.isConnected)
   const setInputs = useInputStore((state) => state.setInputs)
+
+  const { data: inputs } = useQuery({
+    queryFn: async () => {
+      return await obs.call('GetInputList')
+    },
+    select: (data) => data.inputs
+  })
+
+  const data = useQueries({
+    queries: inputs ? inputs.map((input) => {
+      return {
+        queryKey: ['messages', input],
+        queryFn: async () => {
+          const { inputSettings } = await obs.call('GetInputSettings', {
+            inputUuid: input.inputUuid as string,
+          })
+
+          return { inputSettings, ...input }
+        }
+      }
+    })
+  : []
+  })
 
   useQuery({
     queryKey: ['obs', 'inputs'],

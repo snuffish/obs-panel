@@ -32,7 +32,7 @@ export function ObsStreamingDashboard() {
     mutationFn: async () => {
       await obs.call('StartStream')
 
-      await queryClient.invalidateQueries(['obs', 'streamStatus'])
+      await queryClient.invalidateQueries({ queryKey: ['obs', 'streamStatus'] })
     },
   })
 
@@ -40,7 +40,7 @@ export function ObsStreamingDashboard() {
     mutationFn: async () => {
       await obs.call('StopStream')
 
-      await queryClient.invalidateQueries(['obs', 'streamStatus'])
+      await queryClient.invalidateQueries({ queryKey: ['obs', 'streamStatus'] })
     },
   })
 

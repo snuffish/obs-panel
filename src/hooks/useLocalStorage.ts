@@ -16,7 +16,7 @@ export const useLocalStorage = (key: string, _default = '') => {
         mutationFn: async (value: string) => {
             window.localStorage.setItem(key, value)
 
-            await queryClient.invalidateQueries(['localStorage', key])
+            await queryClient.invalidateQueries({ queryKey: ['localStorage', key] })
         }
     })
 

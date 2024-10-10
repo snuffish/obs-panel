@@ -48,7 +48,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
     onSuccess: async () => {
         setIsEdit(false)
 
-        await queryClient.invalidateQueries(['obs', 'scenes'])
+        await queryClient.invalidateQueries({ queryKey: ['obs', 'scenes'] })
     },
     onError: (error) => console.error('Failed to set scene name:', error),
   })
@@ -60,7 +60,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
       })
     },
     onSuccess: async () => {
-        await queryClient.invalidateQueries(['obs', 'scenes'])
+        await queryClient.invalidateQueries({ queryKey: ['obs', 'scenes'] })
     },
     onError: (error) => console.error('Failed to activate scene:', error),
   })
