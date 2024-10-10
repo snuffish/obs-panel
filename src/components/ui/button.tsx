@@ -60,7 +60,10 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, intent, size, disabled, asChild = false, ...props }, ref) => {
+  (
+    { className, intent, size, disabled, asChild = false, ...props },
+    ref,
+  ) => {
     const Comp = asChild ? Slot : 'button'
 
     return (
@@ -69,7 +72,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled}
         {...props}
-      />
+      >
+        {props.children}
+      </Comp>
     )
   },
 )

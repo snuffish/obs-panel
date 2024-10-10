@@ -29,6 +29,7 @@ export function ObsStreamingDashboard() {
   })
 
   const { mutate: startStream } = useMutation({
+    mutationKey: ['obs', 'startStream'],
     mutationFn: async () => {
       await obs.call('StartStream')
 
@@ -37,6 +38,7 @@ export function ObsStreamingDashboard() {
   })
 
   const { mutate: stopStream } = useMutation({
+    mutationKey: ['obs', 'stopStream'],
     mutationFn: async () => {
       await obs.call('StopStream')
 

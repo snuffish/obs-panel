@@ -32,16 +32,16 @@ export function ObsRecordingDashboard() {
     mutationFn: async () => {
       await obs.call('StartRecord')
 
-      await queryClient.invalidateQueries(['obs', 'recordStatus'])
-    },
+      await queryClient.invalidateQueries({ queryKey: ['obs', 'recordStatus']})
+    }
   })
 
   const { mutate: stopRecord } = useMutation({
     mutationFn: async () => {
       await obs.call('StopRecord')
 
-      await queryClient.invalidateQueries(['obs', 'recordStatus'])
-    },
+      await queryClient.invalidateQueries({ queryKey: ['obs', 'recordStatus'] })
+    }
   })
 
   if (!isConnected) return <Disconnected />
