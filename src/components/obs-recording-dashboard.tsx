@@ -29,6 +29,7 @@ export function ObsRecordingDashboard() {
   })
 
   const { mutate: startRecord } = useMutation({
+    mutationKey: ['obs', 'startRecord'],
     mutationFn: async () => {
       await obs.call('StartRecord')
 
@@ -37,6 +38,7 @@ export function ObsRecordingDashboard() {
   })
 
   const { mutate: stopRecord } = useMutation({
+    mutationKey: ['obs', 'stopRecord'],
     mutationFn: async () => {
       await obs.call('StopRecord')
 

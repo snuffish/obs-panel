@@ -1,25 +1,29 @@
 'use client'
 
-import React, { useRef } from 'react'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import React, { useEffect, useRef } from 'react'
 import { type PropsWithChildren } from 'react'
+import { getData } from '~/actions'
 import { useLocalStorage } from '~/hooks/useLocalStorage'
 
 export default function AudioLayout({ children }: PropsWithChildren) {
-  const value = useRef<HTMLInputElement>(null)
+  const { mutate, data } = useMutation({
+    mutationFn: getData,
+    onMutate: async () => {
+      console.log('onMutate')
+    }
+  })
 
-  const [item, setItem] = useLocalStorage('testValue')
+  console.log(data, 'data')
 
-  const setValue = () => {
-    setItem(value.current?.value ? value.current?.value : '')
-  }
+  useEffect(() => {
+    return () => mutate()
+  }, [])
 
   return (
     <div className='col-start-2 -col-end-2 bg-white'>
-      <div>
-        <input ref={value} type='text' />
-        <button onClick={setValue}>TEST</button>
-      </div>
-      <div>VALUE: {item}</div>
+      <button onClick={() => mutate()}>CLICK ME</button>
+      {data?.value}
       {children}
     </div>
   )
