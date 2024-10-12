@@ -31,11 +31,8 @@ const toastVariants = cva(
       variant: {
         default:
           'border bg-white text-neutral-950 dark:bg-neutral-950 dark:text-neutral-50',
-        destructive:
-          'border-red-500 bg-red-500/50',
-        success: [
-          'border-green-500 bg-green-500/50'
-        ],
+        destructive: 'border-red-500 bg-red-500/50',
+        success: ['border-green-500 bg-green-500/50'],
       },
     },
     defaultVariants: {
@@ -50,7 +47,7 @@ const Toast = React.forwardRef<
     VariantProps<typeof toastVariants> & {
       stay?: boolean
     }
->(({ className, variant, stay = false, duration = 5000, ...props }, ref) => {
+>(({ className, variant, stay = false, duration = 2000, ...props }, ref) => {
   return (
     <ToastPrimitives.Root
       duration={stay ? 1000000000 : duration}

@@ -3,7 +3,6 @@
 import {
   OBSWebSocket
 } from 'obs-websocket-js'
-import { useRecordStore } from '~/store/recordStore'
 
 export const obs = new OBSWebSocket()
 

@@ -1,58 +1,14 @@
 'use client'
 
 import { type PropsWithChildren } from 'react'
-import { NavigationMenu } from '~/components/ui/navigation-menu'
+import { Button } from '~/components/ui/button'
+import { useConnect } from '~/hooks/useConnect'
 
 export default function NewLayout({ children }: PropsWithChildren) {
+  
+
   return (
     <>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      TESTAR<br/>
-      
       {children}
     </>
   )

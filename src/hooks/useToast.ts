@@ -2,8 +2,17 @@
 
 // Inspired by react-hot-toast library
 import * as React from 'react'
+import { create } from 'zustand'
 
 import type { ToastActionElement, ToastProps } from '~/components/ui/toast'
+
+const useToastStore = create<{
+  isMuted: boolean,
+  setMute(mute: boolean): void
+}>((set) => ({
+  isMuted: false,
+  setMute: (mute) => set({ isMuted: mute }),
+}))
 
 const TOAST_LIMIT = 5
 const TOAST_REMOVE_DELAY = 5
@@ -74,6 +83,8 @@ const addToRemoveQueue = (toastId: string) => {
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'ADD_TOAST':
+      if (useToastStore.getState().isMuted) return state
+      
       return {
         ...state,
         toasts: [action.toast, ...state.toasts].slice(0, TOAST_LIMIT),
@@ -170,6 +181,7 @@ function toast({ ...props }: Toast) {
 
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState)
+  const { isMuted, setMute } = useToastStore()
 
   React.useEffect(() => {
     listeners.push(setState)
@@ -185,6 +197,12 @@ function useToast() {
     ...state,
     toast,
     dismiss: (toastId?: string) => dispatch({ type: 'DISMISS_TOAST', toastId }),
+    mute: {
+      isMuted,
+      invoke: () => {
+        setMute(!isMuted)
+      },
+    }
   }
 }
 
