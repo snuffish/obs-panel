@@ -57,10 +57,12 @@ const MenuSection = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             {menuItems.map((tab) => (
-              <DropdownMenuItem key={tab.path}>
-                <tab.icon className='mr-2 h-4 w-4' />
-                {tab.label}
-              </DropdownMenuItem>
+              <Link href={tab.path}>
+                <DropdownMenuItem key={tab.path}>
+                  <tab.icon className='mr-2 h-4 w-4' />
+                  {tab.label}
+                </DropdownMenuItem>
+              </Link>
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
@@ -166,11 +168,11 @@ const StatusSection = () => {
             variant='outline'
             className='border-green-500'
           >
-            <ZapIcon /> Connected
+            <ZapIcon /> <span className='hidden md:inline'>Disconnect</span>
           </Button>
         ) : (
           <Button onClick={invoke} variant='outline' className='border-red-500'>
-            <ZapOffIcon /> Disconnected
+            <ZapOffIcon /> <span className='hidden md:inline'>Connect</span>
           </Button>
         )}
       </div>
