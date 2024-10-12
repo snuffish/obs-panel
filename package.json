@@ -13,6 +13,7 @@
     "docker:start": "docker run -p 3000:3000 obs-panel"
   },
   "dependencies": {
+    "@fluid-tailwind/tailwind-merge": "^0.0.3",
     "@headlessui/react": "^2.1.10",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.2",
@@ -47,6 +48,7 @@
     "zustand": "^5.0.0-rc.2"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.15",
     "@types/eslint": "^8.56.10",
     "@types/node": "^20.14.10",
@@ -57,6 +59,7 @@
     "@typescript-eslint/parser": "^8.1.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.4",
+    "fluid-tailwind": "^1.0.3",
     "postcss": "^8.4.39",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.5",
