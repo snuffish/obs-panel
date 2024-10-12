@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card"
 import CameraOff from '~/resources/camera-off.png'
 import NextImage from 'next/image';
-import { CardDescription } from "./Card";
+import { AppCardDescription } from "./AppCard";
 
 import Image1 from '~/resources/image.png'
 import Image2 from '~/resources/Image2.jpg'
@@ -24,7 +24,7 @@ const Scene = () => {
         <div className='flex flex-1 flex-col p-5'>
           <div className='mb-5 border-b border-gray-200 pb-5'>
             <CardTitle>Scene 1</CardTitle>
-            <CardDescription>Description</CardDescription>
+            <AppCardDescription>Description</AppCardDescription>
           </div>
         </div>
         <div className='ml-auto flex w-full items-center justify-between'>

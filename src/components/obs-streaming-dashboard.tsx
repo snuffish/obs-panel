@@ -9,7 +9,7 @@ import { Button } from '~/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { obs } from '~/services/obs'
 import { useConnectionStore } from '~/store/connectionStore'
-import Disconnected from './Disconnected'
+import { Disconnected } from './Disconnected'
 import SystemResources from './SystemResources'
 import { useStreamStore } from '~/store/streamStore'
 
@@ -67,11 +67,11 @@ export function ObsStreamingDashboard() {
           </div>
           <div className='space-x-2'>
             {active ? (
-              <Button onClick={() => stopStream()} intent='destructive'>
+              <Button onClick={() => stopStream()}>
                 <Circle className='mr-2 h-4 w-4 fill-current' /> Stop Streaming
               </Button>
             ) : (
-              <Button onClick={() => startStream()} intent='dark'>
+              <Button onClick={() => startStream()}>
                 <Circle className='mr-2 h-4 w-4 fill-current' /> Start Streaming
               </Button>
             )}

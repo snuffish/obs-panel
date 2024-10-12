@@ -1,7 +1,7 @@
 import { Terminal } from "lucide-react";
 import { Alert, AlertTitle, AlertDescription } from "./ui/alert";
 
-export default function Disconnected() {
+export function Disconnected() {
   return (
     <Alert>
       <Terminal className='h-4 w-4' />

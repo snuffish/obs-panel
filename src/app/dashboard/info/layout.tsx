@@ -5,18 +5,20 @@ import { type PropsWithChildren } from 'react'
 import NextImage from 'next/image'
 
 import Image from '~/resources/image.png'
-import { Card, CardDescription, CardHeader, CardTitle } from '~/components/Card'
+import { AppCard, AppCardTitle, AppCardDescription } from '~/components/AppCard'
+
 import { ScenePreview } from '~/components/scene-preview'
 import { Edit2Icon, InfoIcon, RefreshCwIcon } from 'lucide-react'
 
 import Image1 from '~/resources/image.png'
 import Image2 from '~/resources/Image2.jpg'
 import { Button } from '~/components/ui/button'
+import { CardHeader } from '~/components/ui/card'
 
 const Scene = () => {
   return (
     <div className='flex flex-wrap gap-4 p-4'>
-      <Card>
+      <AppCard>
         <CardHeader>
           <NextImage
             src={Image2}
@@ -26,8 +28,8 @@ const Scene = () => {
         </CardHeader>
         <div className='flex flex-1 flex-col p-5'>
           <div className='mb-5 border-b border-gray-200 pb-5'>
-            <CardTitle>Scene 1</CardTitle>
-            <CardDescription>Description</CardDescription>
+            <AppCardTitle>Scene 1</AppCardTitle>
+            <AppCardDescription>Description</AppCardDescription>
           </div>
         </div>
         <div className='ml-auto flex w-full items-center justify-between'>
@@ -46,7 +48,7 @@ const Scene = () => {
             </Button>
           </div>
         </div>
-      </Card>
+      </AppCard>
     </div>
   )
 }
