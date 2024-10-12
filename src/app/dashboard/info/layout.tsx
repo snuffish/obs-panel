@@ -1,17 +1,16 @@
 'use client'
 
 import { type PropsWithChildren } from 'react'
-import { ObsWebsocketDashboard } from '~/components/obs-websocket-dashboard'
-import {  toast } from '~/hooks/useToast'
+import { Button } from '~/components/ui/button'
+import { useConnect } from '~/hooks/useConnect'
 
-export default function InfoLayout({ children }: PropsWithChildren) {
+export default function NewLayout({ children }: PropsWithChildren) {
+  
+
   return (
-    <div className='col-start-2 -col-end-2'>
-      {/* <LogWindowComponent /> */}
-
-      <ObsWebsocketDashboard />
-
+    <>
+    DASHBOARD
       {children}
-    </div>
+    </>
   )
 }

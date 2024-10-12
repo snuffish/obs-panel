@@ -1,15 +1,16 @@
 'use client'
 
-import { PropsWithChildren } from "react"
-import ScenesDashboard from "~/components/obs-scenes-dashboard"
+import { type PropsWithChildren } from 'react'
+import { Button } from '~/components/ui/button'
+import { useConnect } from '~/hooks/useConnect'
 
 export default function ScenesLayout({ children }: PropsWithChildren) {
+  
+
   return (
-    <div className='col-start-2 -col-end-2'>
-      <div className='space-y-4 p-4'>
-        <ScenesDashboard />
-      </div>
+    <>
+        SCENES
       {children}
-    </div>
+    </>
   )
 }

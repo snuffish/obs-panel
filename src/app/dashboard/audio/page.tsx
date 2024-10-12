@@ -1,5 +1,5 @@
 import React from 'react'
 
-export default function AudioPage() {
-  return <></>
+export default async function NewPage() {
+  return null
 }

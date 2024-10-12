@@ -31,16 +31,19 @@ import { Separator } from '~/components/ui/separator'
 import { useConnect } from '~/hooks/useConnect'
 import { Badge } from './ui/badge'
 import { useToast } from '~/hooks/useToast'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
 
-const tabs = [
-  { id: 'dashboard', icon: LayoutDashboardIcon, label: 'Dashboard' },
-  { id: 'scenes', icon: MonitorIcon, label: 'Scenes' },
-  { id: 'video', icon: VideoIcon, label: 'Video' },
-  { id: 'audio', icon: AudioLinesIcon, label: 'Audio' },
+export const menuItems = [
+  { path: '/dashboard', icon: LayoutDashboardIcon, label: 'Dashboard' },
+  { path: '/scenes', icon: MonitorIcon, label: 'Scenes' },
+  { path: '/video', icon: VideoIcon, label: 'Video' },
+  { path: '/audio', icon: AudioLinesIcon, label: 'Audio' },
 ]
 
-const Sections = () => {
-  const activeTab = 'dashboard'
+const MenuSection = () => {
+  const pathname = usePathname()
+  const appPath = pathname === '/' ? '/dashboard' : pathname
 
   return (
     <>
@@ -49,12 +52,12 @@ const Sections = () => {
           <DropdownMenuTrigger asChild>
             <Button variant='outline' size='sm'>
               <Menu className='mr-2 h-4 w-4' />
-              {tabs.find((tab) => tab.id === activeTab)?.label}
+              {menuItems.find((tab) => tab.path === appPath)?.label}
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
-            {tabs.map((tab) => (
-              <DropdownMenuItem key={tab.id}>
+            {menuItems.map((tab) => (
+              <DropdownMenuItem key={tab.path}>
                 <tab.icon className='mr-2 h-4 w-4' />
                 {tab.label}
               </DropdownMenuItem>
@@ -63,16 +66,18 @@ const Sections = () => {
         </DropdownMenu>
       </div>
       <div className='hidden items-center space-x-2 md:flex lg:space-x-4'>
-        {tabs.map((tab) => (
-          <Button
-            key={tab.id}
-            variant={activeTab === tab.id ? 'default' : 'ghost'}
-            size='sm'
-            className='text-xs lg:text-sm'
-          >
-            <tab.icon className='mr-1 h-4 w-4 lg:mr-2' />
-            {tab.label}
-          </Button>
+        {menuItems.map((tab) => (
+          <Link href={tab.path}>
+            <Button
+              key={tab.path}
+              variant={appPath === tab.path ? 'default' : 'ghost'}
+              size='sm'
+              className='text-xs lg:text-sm'
+            >
+              <tab.icon className='mr-1 h-4 w-4 lg:mr-2' />
+              {tab.label}
+            </Button>
+          </Link>
         ))}
       </div>
     </>
@@ -145,7 +150,7 @@ const MuteToast = () => {
   )
 }
 
-const Status = () => {
+const StatusSection = () => {
   const { isConnected, invoke } = useConnect()
 
   return (
@@ -180,8 +185,8 @@ export function Footer() {
     <div className='fixed bottom-0 left-0 right-0 z-50 border-t bg-white dark:bg-neutral-950'>
       <div className='container mx-auto px-4'>
         <div className='flex h-12 items-center justify-between md:h-14 lg:h-16'>
-          <Sections />
-          <Status />
+          <MenuSection />
+          <StatusSection />
         </div>
       </div>
     </div>
