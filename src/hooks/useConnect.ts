@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useServerSettings } from '~/hooks/useServerSettings'
 import { toast } from '~/hooks/useToast'
 import { obs } from '~/services/obs'
-import { setSocketConnect, useConnectionStore } from '~/store/connectionStore'
+import { useConnectionStore } from '~/store/connectionStore'
 
 export const useConnect = () => {
   const { isConnected, setIsConnected, setIdentified } = useConnectionStore()
@@ -13,8 +13,6 @@ export const useConnect = () => {
   const { mutate: connect } = useMutation({
     mutationFn: async () => {
         const socket = obs.connect(wsEndpoint)
-        setSocketConnect(socket)
-      
         return await socket
     },
     onSuccess: (session) => {
