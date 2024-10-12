@@ -14,15 +14,17 @@ export default function AudioLayout({ children }: PropsWithChildren) {
     }
   })
 
-  console.log(data, 'data')
-
   useEffect(() => {
-    return () => mutate()
+    return () => mutate({
+      something: 5
+    })
   }, [])
+
+    console.log(data, 'data')
 
   return (
     <div className='col-start-2 -col-end-2 bg-white'>
-      <button onClick={() => mutate()}>CLICK ME</button>
+      <button onClick={() => mutate({something: 0})}>CLICK ME</button>
       {data?.value}
       {children}
     </div>

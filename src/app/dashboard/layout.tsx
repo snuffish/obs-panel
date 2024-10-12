@@ -1,12 +1,14 @@
-import { type PropsWithChildren } from 'react'
-import { BottomNavWithSettingsComponent } from '~/components/bottom-nav-with-settings'
-import Header from '~/components/header'
+'use client'
 
-export default function DashboardLayout({ children }: PropsWithChildren) {
+import { type PropsWithChildren } from 'react'
+import { Footer } from '~/components/footer'
+import { Navbar } from '~/components/navbar'
+
+export default function Layout({ children }: PropsWithChildren) {
   return (
     <div className='col-start-2 -col-end-2'>
-      <Header />
-      <BottomNavWithSettingsComponent />
+      <Navbar />
+      <Footer />
       {children}
     </div>
   )

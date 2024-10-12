@@ -7,15 +7,15 @@ await import('./src/env.js')
 /** @type {import("next").NextConfig} */
 const config = {
   output: 'standalone',
-  redirects: async () => {
-    return [
-      {
-        source: '/',
-        destination: '/dashboard',
-        permanent: true,
-      },
-    ]
-  },
+  // redirects: async () => {
+  //   return [
+  //     {
+  //       source: '/',
+  //       destination: '/dashboard',
+  //       permanent: true,
+  //     },
+  //   ]
+  // },
 }
 
 export default config

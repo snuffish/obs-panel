@@ -16,29 +16,58 @@ import { useMutation } from '@tanstack/react-query'
 import { useServerSettings } from '~/hooks/useServerSettings'
 import { obs } from '~/services/obs'
 import { useConnectionStore } from '~/store/connectionStore'
+import { toast } from '~/hooks/useToast'
 
 const ConnectButton = () => {
   const { isConnected, setIsConnected, setIdentified } = useConnectionStore()
   const { settings } = useServerSettings()
+  const wsEndpoint = `ws://${settings.host}:${settings.port}`
 
   const { mutate: connect } = useMutation({
     mutationFn: async () => {
-      const session = await obs.connect(`ws://${settings.host}:${settings.port}`)
-
+      return await obs.connect(wsEndpoint)
+    },
+    onSuccess: (session) => {
       setIsConnected(true)
       setIdentified(session)
+
+      toast({
+        variant: 'success',
+        title: 'Connected!',
+      })
     },
-    onError: (error) => console.error('Failed to connect:', error),
+    onError: (err) => {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to connect',
+        description: `Failed to connect to OBS WebSocket: ${wsEndpoint}`,
+      })
+
+      throw err
+    },
   })
 
   const { mutate: disconnect } = useMutation({
     mutationFn: async () => {
-      await obs.disconnect()
-
+      return await obs.disconnect()
+    },
+    onSuccess() {
       setIsConnected(false)
       setIdentified(undefined)
+
+      toast({
+        variant: 'destructive',
+        title: 'Disconnected!',
+      })
     },
-    onError: (error) => console.error('Failed to disconnect:', error),
+    onError: (err) => {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to disconnect'
+      })
+
+      throw err
+    },
   })
 
   return (
@@ -68,32 +97,32 @@ const SectionButton = ({
   )
 }
 
-const Header = () => {
+const Header = ({ children }: PropsWithChildren) => {
   return (
     <div className='space-x-4 rounded-b-2xl bg-gray-800 p-4'>
       <ConnectButton />
 
-      <SectionButton intent='outline' href='/dashboard/info'>
+      <SectionButton intent='outline' href='/info'>
         <InfoIcon />
         Info
       </SectionButton>
 
-      <SectionButton intent='outline' href='/dashboard/scenes'>
+      <SectionButton intent='outline' href='/scenes'>
         <MonitorIcon />
         Scenes
       </SectionButton>
 
-      <SectionButton intent='outline' href='/dashboard/record'>
+      <SectionButton intent='outline' href='/record'>
         <VideoIcon />
         Record
       </SectionButton>
 
-      <SectionButton intent='outline' href='/dashboard/stream'>
+      <SectionButton intent='outline' href='/stream'>
         <PodcastIcon />
         Stream
       </SectionButton>
 
-      <SectionButton intent='outline' href='/dashboard/audio'>
+      <SectionButton intent='outline' href='/audio'>
         <Volume2Icon />
         Audio
       </SectionButton>

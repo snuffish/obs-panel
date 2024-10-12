@@ -3,6 +3,7 @@ import '~/styles/globals.css'
 import { GeistSans } from 'geist/font/sans'
 import { type Metadata } from 'next'
 import ReactQueryProvider from '~/providers/ReactQueryProvider'
+import { Toaster } from '~/components/ui/toaster'
 
 export const metadata: Metadata = {
   title: 'OBS Panel',
@@ -13,9 +14,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang='en' className={`${GeistSans.variable}`}>
-      <body className='bg-slate-950/90'>
-        <main className='grid grid-cols-[minmax(40px,1fr)_repeat(10,_minmax(0,_12rem))_minmax(40px,1fr)]'>
-          <ReactQueryProvider>{children}</ReactQueryProvider>
+      <body className='bg-neutral-200'>
+        <main>
+          <ReactQueryProvider>
+            {children}
+            <Toaster />
+          </ReactQueryProvider>
         </main>
       </body>
     </html>
