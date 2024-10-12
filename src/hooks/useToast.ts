@@ -83,7 +83,7 @@ const addToRemoveQueue = (toastId: string) => {
 export const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'ADD_TOAST':
-      if (useToastStore.getState().isMuted) return state
+      if (useToastStore.getState().isMutede) return state
       
       return {
         ...state,
