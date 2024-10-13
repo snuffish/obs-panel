@@ -9,6 +9,7 @@ import { Button } from './ui/button'
 import { Card, CardContent } from './ui/card'
 import Image from 'next/image'
 import { Input } from './ui/input'
+import { getSourceScreenshot } from '~/services/asyncFuncs'
 
 const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
   const queryClient = useQueryClient()
@@ -22,16 +23,7 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
 
   const { data: base64 } = useQuery({
     queryKey: ['base64', sceneUuid],
-    queryFn: async () => {
-      const data = await obs.call('GetSourceScreenshot', {
-        sourceUuid: sceneUuid,
-        imageFormat: 'jpg',
-        imageHeight: 150,
-        imageWidth: 150,
-      })
-
-      return data.imageData
-    },
+    queryFn: () => getSourceScreenshot(),
     refetchInterval: 1000,
     enabled: isConnected,
   })

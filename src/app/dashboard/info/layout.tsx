@@ -14,6 +14,9 @@ import Image1 from '~/resources/image.png'
 import Image2 from '~/resources/Image2.jpg'
 import { Button } from '~/components/ui/button'
 import { CardHeader } from '~/components/ui/card'
+import { getSceneList } from '~/services/asyncFuncs'
+import { useQuery } from '@tanstack/react-query'
+import { toast } from '~/hooks/useToast'
 
 const Scene = () => {
   return (
@@ -29,7 +32,7 @@ const Scene = () => {
         <div className='flex flex-1 flex-col p-5'>
           <div className='mb-5 border-b border-gray-200 pb-5'>
             <AppCardTitle>Scene 1</AppCardTitle>
-            <AppCardDescription>Description</AppCardDescription>
+            <AppCardDescription>Descriptdion</AppCardDescription>
           </div>
         </div>
         <div className='ml-auto flex w-full items-center justify-between'>
@@ -54,8 +57,24 @@ const Scene = () => {
 }
 
 export default function NewLayout({ children }: PropsWithChildren) {
+  const { data } = useQuery({
+    queryKey:  ['obs', 'record'],
+    queryFn: () => getSceneList(),
+    onSuccess: (data) => {
+      toast({
+         title: 'Get Scenes',
+         description: `Fetched datxxx: ${JSON.stringify(data)}`
+      })
+    }
+  })
+
+  console.log(data, "DATA!!!")
+
   return (
     <div className='flex justify-center flex-wrap'>
+      {data?.scenes.map((scene, index) => {
+        return <Scene key={index} {...scene} />
+      })}
       <Scene />
       <Scene />
       <Scene />
