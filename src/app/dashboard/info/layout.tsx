@@ -6,7 +6,7 @@ import NextImage from 'next/image'
 
 import Image from '~/resources/image.png'
 import { AppCard, AppCardTitle, AppCardDescription } from '~/components/AppCard'
-
+0
 import { ScenePreview } from '~/components/scene-preview'
 import { Edit2Icon, InfoIcon, RefreshCwIcon } from 'lucide-react'
 

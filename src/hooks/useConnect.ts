@@ -46,7 +46,7 @@ export const useConnect = () => {
       toast({
         variant: 'destructive',
         title: 'Disconnected!',
-      })
+      }) 
     },
     onError: (err) => {
       toast({
