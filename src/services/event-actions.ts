@@ -1,5 +1,7 @@
 import { obs } from "./obs"
 
+export type SceneListResponse = Awaited<ReturnType<typeof getSceneList>>
+
 export const getSourceScreenshot = async () => {
     const data = await obs.call('GetSourceScreenshot', {
         sourceUuid: '',
@@ -12,5 +14,5 @@ export const getSourceScreenshot = async () => {
 }
 
 export const getSceneList = async () => {
-  return await obs.call('GetSceneList')    
+  return await obs.call('GetSceneList')
 }

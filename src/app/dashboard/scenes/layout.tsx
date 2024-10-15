@@ -9,57 +9,43 @@ import { Card, CardContent } from '~/components/ui/card'
 import { toast } from '~/hooks/useToast'
 import { obs } from '~/services/obs'
 import { useConnectionStore } from '~/store/connectionStore'
-import { useSceneStore, type SceneProps } from '~/store/sceneStore'
+import { useSceneStore} from '~/store/sceneStore'
 import { SourceProps } from '~/store/sourceStore'
-import { getSourceScreenshot } from '~/services/asyncFuncs'
+import { getSceneList, getSourceScreenshot } from '~/services/event-actions'
+import { InputProps } from '../../../components/ui/input';
+import Image from '~/resources/camera-off.png'
+import { useSource } from '~/hooks/useSource';
 
 export default function ScenesLayout({ children }: PropsWithChildren) {
   const id = useId()
   const isConnected = useConnectionStore((state) => state.isConnected)
   const { setScenes, setCurrent } = useSceneStore((state) => state)
+  const base64Image = useSource('054dde21-bcff-407a-af98-9e0ead79ebe6')
   console.log(isConnected, 'isConnected!!!')
 
   const { data: scenes } = useQuery({
     queryKey: ['obs', 'scenes'],
-    queryFn: async () => {
-      return await obs.call('GetSceneList')    
-    },
+    queryFn: () => getSceneList(),
     onSuccess: (data) => {
       const { scenes, ...current } = data
       setCurrent(data)
       
       toast({
         title: 'Scenes fetched',
-        description: `Fetched data: ${JSON.stringify(data)}}`,
+        description: JSON.stringify(data),
         stay: true,
       })
-    },
-  })
 
-  return <div>
-    dsd
-  </div>
-}
-
-const Scene = (sceneData: Omit<SourceProps, 'unversionedInputKind'>) => {
-  const isConnected = useConnectionStore((state) => state.isConnected)
-  const { data: base64 } = useQuery({
-    queryKey: ['base64'],
-    queryFn: async () => getSourceScreenshot(),
-    refetchInterval: 1000,
-    enabled: isConnected,
+      return (
+        <div className='flex flex-wrap justify-center'>
+          dasdas
+        </div>
+      )
+      // return <NextImage src={Image} alt='Image' />
+      
+      // {data.scenes.map((screen, index) => {
+      //  )
+      // })}
+    }
   })
-  
-  return (
-    <Card>
-      <CardContent>
-        <AppCardTitle>{sceneData.inputName}</AppCardTitle>
-        <NextImage
-          src={base64 ?? ''}
-          alt='Image'
-          className='h-full w-full rounded-xl object-cover'
-        />
-      </CardContent>
-    </Card>
-  )
 }

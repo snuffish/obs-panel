@@ -4,22 +4,18 @@ import { type PropsWithChildren } from 'react'
 
 import NextImage from 'next/image'
 
-import Image from '~/resources/image.png'
-import { AppCard, AppCardTitle, AppCardDescription } from '~/components/AppCard'
-0
-import { ScenePreview } from '~/components/scene-preview'
 import { Edit2Icon, InfoIcon, RefreshCwIcon } from 'lucide-react'
+import { AppCard, AppCardDescription, AppCardTitle } from '~/components/AppCard'
 
-import Image1 from '~/resources/image.png'
-import Image2 from '~/resources/Image2.jpg'
+import { useQuery } from '@tanstack/react-query'
 import { Button } from '~/components/ui/button'
 import { CardHeader } from '~/components/ui/card'
-import { getSceneList } from '~/services/asyncFuncs'
-import { useQuery } from '@tanstack/react-query'
 import { toast } from '~/hooks/useToast'
+import Image2 from '~/resources/Image2.jpg'
+import { getSceneList, type SceneListResponse } from '~/services/event-actions'
 
-const Scene = () => {
-  return (
+const H1 = (x: SceneListResponse) => {
+  H1.return(
     <div className='flex flex-wrap gap-4 p-4'>
       <AppCard>
         <CardHeader>
@@ -52,35 +48,35 @@ const Scene = () => {
           </div>
         </div>
       </AppCard>
+    </div>,
+  )
+}
+
+export default function InfoLayout({ children }: PropsWithChildren) {
+  const { data } = useQuery({
+    queryKey: ['obs', 'record'],
+    queryFn: () => getSceneList(),
+    onSuccess: (data) => {
+      toast({
+        title: 'Get Scenes',
+        description: JSON.stringify(data),
+      })
+    },
+  })
+
+  console.log(data, 'DATA!!!')
+
+  return (
+    <div className='flex flex-wrap justify-center'>
+      {data?.scenes.map((scene, index) => {
+        // eslint-disable-next-line react/jsx-no-undef
+        return <Scene key={index} {...scene} />
+      })}
+      {children}
     </div>
   )
 }
 
-export default function NewLayout({ children }: PropsWithChildren) {
-  const { data } = useQuery({
-    queryKey:  ['obs', 'record'],
-    queryFn: () => getSceneList(),
-    onSuccess: (data) => {
-      toast({
-         title: 'Get Scenes',
-         description: `Fetched datxxx: ${JSON.stringify(data)}`
-      })
-    }
-  })
-
-  console.log(data, "DATA!!!")
-
-  return (
-    <div className='flex justify-center flex-wrap'>
-      {data?.scenes.map((scene, index) => {
-        return <Scene key={index} {...scene} />
-      })}
-      <Scene />
-      <Scene />
-      <Scene />
-      <Scene />
-      <Scene />
-      {children}
-    </div>
-  )
+const Scene = () => {
+  return <></>
 }

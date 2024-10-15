@@ -1,5 +1,3 @@
-import React from 'react'
-
-export default async function NewPage() {
+export default async function ScenesPage() { 
   return null
 }

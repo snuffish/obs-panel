@@ -9,7 +9,7 @@ import { Button } from './ui/button'
 import { Card, CardContent } from './ui/card'
 import Image from 'next/image'
 import { Input } from './ui/input'
-import { getSourceScreenshot } from '~/services/asyncFuncs'
+import { getSourceScreenshot } from '~/services/event-actions'
 
 const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
   const queryClient = useQueryClient()
