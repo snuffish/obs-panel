@@ -3,53 +3,21 @@
 import { useId, type PropsWithChildren } from 'react'
 
 import { useQuery } from '@tanstack/react-query'
+import { Edit2Icon, InfoIcon, RefreshCwIcon } from 'lucide-react'
 import NextImage from 'next/image'
-import { AppCard, AppCardDescription, AppCardTitle } from '~/components/AppCard'
-import { Card, CardContent, CardHeader } from '~/components/ui/card'
+import { AppCard, AppCardDescription, AppCardHeader, AppCardTitle } from '~/components/AppCard'
+import { useSource } from '~/hooks/useSource'
 import { toast } from '~/hooks/useToast'
-import { obs } from '~/services/obs'
-import { useConnectionStore } from '~/store/connectionStore'
-import { useSceneStore} from '~/store/sceneStore'
-import { SourceProps } from '~/store/sourceStore'
-import { getSceneList, getSourceScreenshot } from '~/services/event-actions'
-import { InputProps } from '../../../components/ui/input';
-import Image from '~/resources/camera-off.png'
-import { useSource } from '~/hooks/useSource';
-import { Button } from '@headlessui/react'
-import { InfoIcon, RefreshCwIcon, Edit2Icon } from 'lucide-react'
-import Image2 from '~/resources/Image2.jpg'
+import { getSceneList } from '~/services/event-actions'
+import { type SceneProps, useSceneStore } from '~/store/sceneStore'
+import { Button } from '~/components/ui/button'
 
-export default function ScenesLayout({ children }: PropsWithChildren) {
-  const id = useId()
-  const isConnected = useConnectionStore((state) => state.isConnected)
-  const { setScenes, setCurrent } = useSceneStore((state) => state)
-  const base64Image = useSource('054dde21-bcff-407a-af98-9e0ead79ebe6')
-  // console.log(base64Image, 'base64Image!!!')
-
-  const { data: scenes } = useQuery({
-    queryKey: ['obs', 'scenes'],
-    queryFn: () => getSceneList(),
-    onSuccess: (data) => {
-      const { scenes, ...current } = data
-      setCurrent(data)
-      
-      toast({
-        title: 'Scenes fetched',
-        description: JSON.stringify(data),
-        stay: true,
-      })
-      // return <NextImage src={Image} alt='Image' />
-      
-      // {data.scenes.map((screen, index) => {
-      //  )
-      // })}
-    }
-  })
+const Scene = ({ sceneUuid, sceneName }: SceneProps) => {
+  const base64Image = useSource(sceneUuid)
 
   return (
-    <div className='flex flex-wrap justify-center'>
       <AppCard>
-        <CardHeader>
+        <AppCardHeader>
           <NextImage
             src={base64Image}
             width={150}
@@ -57,11 +25,10 @@ export default function ScenesLayout({ children }: PropsWithChildren) {
             alt='Image'
             className='h-full w-full rounded-xl object-cover'
           />
-        </CardHeader>
+        </AppCardHeader>
         <div className='flex flex-1 flex-col p-5'>
           <div className='mb-5 border-b border-gray-200 pb-5'>
-            <AppCardTitle>Scene 1</AppCardTitle>
-            <AppCardDescription>Descriptdion</AppCardDescription>
+            <AppCardTitle>{sceneName}</AppCardTitle>
           </div>
         </div>
         <div className='ml-auto flex w-full items-center justify-between'>
@@ -81,6 +48,32 @@ export default function ScenesLayout({ children }: PropsWithChildren) {
           </div>
         </div>
       </AppCard>
+  )
+}
+
+export default function ScenesLayout({ children }: PropsWithChildren) {
+  const { setCurrent } = useSceneStore((state) => state)
+
+  const { data: scenes } = useQuery({
+    queryKey: ['obs', 'scenes'],
+    queryFn: () => getSceneList(),
+    onSuccess: (data) => {
+      const { scenes, ...current } = data
+      setCurrent(data)
+      
+      toast({
+        title: 'Scenes fetched',
+        description: JSON.stringify(data),
+        stay: true,
+      })
+    }
+  })
+
+  return (
+    <div className='flex flex-wrap justify-center gap-4 p-4'>
+      {scenes?.scenes?.map((scene, index) => {
+        return <Scene key={index} {...scene} />
+      })}
     </div>
   )
 }
