@@ -19,7 +19,6 @@ export const useSource = (sourceUuid: string) => {
     },
     onSuccess: (data) => {
         setBase64(data)
-        // console.log('Got source screenshot:', data)
     },
     onError: (err) => {
         setBase64(undefined)

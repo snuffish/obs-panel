@@ -9,7 +9,6 @@ import { Button } from './ui/button'
 import { Card, CardContent } from './ui/card'
 import Image from 'next/image'
 import { Input } from './ui/input'
-import { getSourceScreenshot } from '~/services/event-actions'
 
 const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
   const queryClient = useQueryClient()
@@ -20,13 +19,6 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
   const currentProgramSceneUuid = useSceneStore(
     (state) => state.current.currentProgramSceneUuid,
   )
-
-  const { data: base64 } = useQuery({
-    queryKey: ['base64', sceneUuid],
-    queryFn: () => getSourceScreenshot(),
-    refetchInterval: 1000,
-    enabled: isConnected,
-  })
 
   const { mutate: changeSceneName } = useMutation({
     mutationFn: async () => {
@@ -61,15 +53,6 @@ const Scene = ({ sceneName, sceneUuid }: SceneProps) => {
     <Card className={sceneUuid === currentProgramSceneUuid ? 'bg-white/50' : ''} onClick={() => activateScene()}>
       <CardContent className='md:flex justify-between p-4'>
         <div className='flex items-center space-x-5 flex-col md:flex-row'>
-          {base64 && (
-            <Image
-              className='rounded-xl'
-              src={base64}
-              width={150}
-              height={150}
-              alt='snapshot'
-            />
-          )}
           {isEdit ? (
             <div className='flex gap-x-2'>
               <Input
