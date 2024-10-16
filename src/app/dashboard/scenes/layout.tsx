@@ -2,7 +2,7 @@
 
 import { useId, type PropsWithChildren } from 'react'
 
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { Edit2Icon, InfoIcon, RefreshCwIcon } from 'lucide-react'
 import NextImage from 'next/image'
 import { AppCard, AppCardDescription, AppCardHeader, AppCardTitle } from '~/components/AppCard'
@@ -11,12 +11,25 @@ import { toast } from '~/hooks/useToast'
 import { getSceneList } from '~/services/event-actions'
 import { type SceneProps, useSceneStore } from '~/store/sceneStore'
 import { Button } from '~/components/ui/button'
+import { obs } from '~/services/obs'
 
 const Scene = ({ sceneUuid, sceneName }: SceneProps) => {
   const base64Image = useSource(sceneUuid)
+  const { currentProgramSceneUuid } = useSceneStore((state) => state.current)
+
+  const { mutate: activateScene } = useMutation({
+    mutationFn: async () => {
+      await obs.call('SetCurrentProgramScene', {
+        sceneUuid,
+      })
+    },
+    onError: (error) => console.error('Failed to activate scene:', error),
+  })
+
+  const activeClasses = currentProgramSceneUuid === sceneUuid ? 'border-2 border-green-10' : ''
 
   return (
-      <AppCard>
+      <AppCard className={activeClasses} onClick={() => activateScene()}>
         <AppCardHeader>
           <NextImage
             src={base64Image}
@@ -27,25 +40,7 @@ const Scene = ({ sceneUuid, sceneName }: SceneProps) => {
           />
         </AppCardHeader>
         <div className='flex flex-1 flex-col p-5'>
-          <div className='mb-5 border-b border-gray-200 pb-5'>
             <AppCardTitle>{sceneName}</AppCardTitle>
-          </div>
-        </div>
-        <div className='ml-auto flex w-full items-center justify-between'>
-          <div>
-            <Button variant='ghost' size='icon'>
-              <InfoIcon />
-            </Button>
-            <Button variant='ghost' size='icon'>
-              <RefreshCwIcon />
-            </Button>
-          </div>
-
-          <div className='flex items-center gap-x-1'>
-            <Button variant='ghost' size='icon'>
-              <Edit2Icon />
-            </Button>
-          </div>
         </div>
       </AppCard>
   )
@@ -54,7 +49,7 @@ const Scene = ({ sceneUuid, sceneName }: SceneProps) => {
 export default function ScenesLayout({ children }: PropsWithChildren) {
   const { setCurrent } = useSceneStore((state) => state)
 
-  const { data: scenes } = useQuery({
+  const { data } = useQuery({
     queryKey: ['obs', 'scenes'],
     queryFn: () => getSceneList(),
     onSuccess: (data) => {
@@ -69,9 +64,11 @@ export default function ScenesLayout({ children }: PropsWithChildren) {
     }
   })
 
+  const scenes = data?.scenes as SceneProps[]
+
   return (
     <div className='flex flex-wrap justify-center gap-4 p-4'>
-      {scenes?.scenes?.map((scene, index) => {
+      {scenes?.map((scene, index) => {
         return <Scene key={index} {...scene} />
       })}
     </div>
